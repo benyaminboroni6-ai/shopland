@@ -1,1 +1,31 @@
- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopland AI</title>
+</head>
+<body>
+
+<h1>Welcome to Shopland</h1>
+
+<div style="padding:20px; max-width:500px;">
+    <h2>Chat with AI</h2>
+
+    <input id="userInput" type="text" placeholder="Type your message..." style="width:100%; padding:10px;">
+
+    <button onclick="sendToAI()" style="margin-top:10px; padding:10px 20px;">Send</button>
+
+    <p id="aiAnswer" style="margin-top:20px; font-weight:bold;"></p>
+</div>
+
+<script src="chat.js"></script>
+
+<script>
+async function sendToAI() {
+    const question = document.getElementById("userInput").value;
+    const answer = await askAI(question);
+    document.getElementById("aiAnswer").innerText = answer;
+}
+</script>
+
+</body>
+</html> 
