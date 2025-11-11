@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa">
 <head>
-    <title>Shopland AI</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Chat</title>
+
+    <style>
+        body { font-family: sans-serif; background: #f0f0f0; padding: 40px; }
+        #chatbox {
+            width: 350px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #aaa;
+        }
+        #messages { height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        #input { width: 100%; padding: 10px; margin-bottom: 10px; }
+        #send { width: 100%; padding: 10px; background: #4caf50; color: white; border: none; border-radius: 5px; }
+    </style>
 </head>
+
 <body>
+    <div id="chatbox">
+        <div id="messages"></div>
+        <input id="input" type="text" placeholder="پیامت را بنویس..." />
+        <button id="send">ارسال</button>
+    </div>
 
-<h1>Welcome to Shopland</h1>
+    <!-- این خط خیلی مهمه، chat.js را به صفحه وصل می‌کنه -->
+    <script src="js/chat.js"></script>
 
-<div style="padding:20px; max-width:500px;">
-    <h2>Chat with AI</h2>
+    <script>
+        const sendBtn = document.getElementById("send");
+        const input = document.getElementById("input");
+        const messages = document.getElementById("messages");
 
-    <input id="userInput" type="text" placeholder="Type your message..." style="width:100%; padding:10px;">
+        sendBtn.onclick = async () => {
+            const text = input.value.trim();
+            if (!text) return;
 
-    <button onclick="sendToAI()" style="margin-top:10px; padding:10px 20px;">Send</button>
+            messages.innerHTML += "<div>👤: " + text + "</div>";
 
-    <p id="aiAnswer" style="margin-top:20px; font-weight:bold;"></p>
-</div>
+            const answer = await askAI(text);
+            messages.innerHTML += "<div>🤖: " + answer + "</div>";
 
-<script src="chat.js"></script>
-
-<script>
-async function sendToAI() {
-    const question = document.getElementById("userInput").value;
-    const answer = await askAI(question);
-    document.getElementById("aiAnswer").innerText = answer;
-}
-</script>
-
+            input.value = "";
+            messages.scrollTop = messages.scrollHeight;
+        };
+    </script>
 </body>
-</html> 
+</html>
