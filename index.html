@@ -7,3031 +7,2378 @@
   <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-        body {
-            box-sizing: border-box;
-            height: 100%;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
-        }
-        
-        * {
-            box-sizing: border-box;
-        }
-
-        /* Page Management */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* ==================== AI CHAT BOT - ENHANCED ==================== */
-        .ai-chat-widget {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .ai-chat-button {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
-                        0 0 0 0 rgba(102, 126, 234, 0.7);
-            cursor: pointer;
-            transition: all 0.4s ease;
-            font-size: 2.2rem;
-            border: none;
-            position: relative;
-            overflow: hidden;
-            animation: pulse-ring 2s infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
-                            0 0 0 0 rgba(102, 126, 234, 0.7);
-            }
-            50% {
-                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
-                            0 0 0 15px rgba(102, 126, 234, 0);
-            }
-            100% {
-                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
-                            0 0 0 0 rgba(102, 126, 234, 0);
-            }
-        }
-
-        .ai-chat-button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
-            animation: rotate 3s linear infinite;
-        }
-
-        .ai-chat-button:hover {
-            transform: scale(1.15);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.7);
-        }
-
-        .ai-chat-button.active {
-            transform: scale(0.95);
-        }
-
-        .ai-chat-pulse {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 22px;
-            height: 22px;
-            background: #48bb78;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-            border: 3px solid white;
-        }
-
-        .ai-chat-window {
-            position: absolute;
-            bottom: 90px;
-            left: 0;
-            width: 420px;
-            height: 600px;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            animation: slideInUp 0.4s ease-out;
-        }
-
-        .ai-chat-window.active {
-            display: flex;
-        }
-
-        body.dark-mode .ai-chat-window {
-            background: #2d3748;
-        }
-
-        .ai-chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ai-chat-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
-            animation: rotate 10s linear infinite;
-        }
-
-        .ai-chat-header-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .ai-chat-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            animation: float 3s ease-in-out infinite;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .ai-chat-header-text h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .ai-chat-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-            opacity: 0.95;
-        }
-
-        .ai-chat-status-dot {
-            width: 8px;
-            height: 8px;
-            background: #48bb78;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .ai-chat-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            color: white;
-            font-size: 1.4rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .ai-chat-close:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: rotate(90deg);
-        }
-
-        .ai-chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: #f7fafc;
-        }
-
-        body.dark-mode .ai-chat-messages {
-            background: #1a202c;
-        }
-
-        .ai-message {
-            display: flex;
-            gap: 10px;
-            animation: slideInLeft 0.3s ease-out;
-        }
-
-        .ai-message.user {
-            flex-direction: row-reverse;
-            animation: slideInRight 0.3s ease-out;
-        }
-
-        .ai-message-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .ai-message-avatar.bot {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .ai-message-avatar.user {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-
-        .ai-message-content {
-            max-width: 75%;
-        }
-
-        .ai-message-bubble {
-            padding: 14px 18px;
-            border-radius: 20px;
-            line-height: 1.6;
-            position: relative;
-            font-size: 14px;
-        }
-
-        .ai-message-bubble.bot {
-            background: white;
-            color: #2d3748;
-            border-bottom-left-radius: 6px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-        }
-
-        body.dark-mode .ai-message-bubble.bot {
-            background: #2d3748;
-            color: #e2e8f0;
-        }
-
-        .ai-message-bubble.user {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-bottom-right-radius: 6px;
-        }
-
-        .ai-message-time {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            margin-top: 6px;
-        }
-
-        .ai-typing-indicator {
-            display: flex;
-            gap: 6px;
-            padding: 14px 18px;
-            background: white;
-            border-radius: 20px;
-            border-bottom-left-radius: 6px;
-            width: fit-content;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-        }
-
-        body.dark-mode .ai-typing-indicator {
-            background: #2d3748;
-        }
-
-        .ai-typing-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-            animation: bounce 1.4s ease-in-out infinite;
-        }
-
-        .ai-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-        .ai-chat-suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .ai-suggestion-chip {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(102, 126, 234, 0.12);
-            color: #667eea;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(102, 126, 234, 0.25);
-            font-weight: 500;
-        }
-
-        .ai-suggestion-chip:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
-        }
-
-        .ai-chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        body.dark-mode .ai-chat-input-container {
-            background: #2d3748;
-            border-top-color: #4a5568;
-        }
-
-        .ai-chat-input-wrapper {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .ai-chat-input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: 24px;
-            outline: none;
-            resize: none;
-            font-family: inherit;
-            font-size: 14px;
-            max-height: 120px;
-            transition: all 0.3s ease;
-        }
-
-        body.dark-mode .ai-chat-input {
-            background: #1a202c;
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-
-        .ai-chat-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.12);
-        }
-
-        .ai-chat-send {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-
-        .ai-chat-send:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.45);
-        }
-
-        .ai-chat-send:active {
-            transform: scale(0.95);
-        }
-
-        .ai-chat-send:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .ai-chat-send:disabled:hover {
-            transform: none;
-        }
-
-        .ai-quick-actions {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ai-quick-action {
-            padding: 7px 14px;
-            border-radius: 16px;
-            background: rgba(102, 126, 234, 0.12);
-            color: #667eea;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
-        }
-
-        .ai-quick-action:hover {
-            background: rgba(102, 126, 234, 0.22);
-            transform: translateY(-2px);
-        }
-
-        /* ==================== ANIMATIONS ==================== */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInDown {
-            0% { opacity: 0; transform: translateY(-30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInLeft {
-            0% { opacity: 0; transform: translateX(-30px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes fadeInRight {
-            0% { opacity: 0; transform: translateX(30px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInRight {
-            0% { opacity: 0; transform: translateX(-50px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInLeft {
-            0% { opacity: 0; transform: translateX(50px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInUp {
-            0% { opacity: 0; transform: translateY(50px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInDown {
-            0% { opacity: 0; transform: translateY(-50px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes zoomIn {
-            0% { opacity: 0; transform: scale(0.5); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ==================== NEW ADVANCED ANIMATIONS ==================== */
-        @keyframes flipInX {
-            0% {
-                opacity: 0;
-                transform: perspective(400px) rotateX(90deg);
-            }
-            100% {
-                opacity: 1;
-                transform: perspective(400px) rotateX(0deg);
-            }
-        }
-
-        @keyframes flipInY {
-            0% {
-                opacity: 0;
-                transform: perspective(400px) rotateY(90deg);
-            }
-            100% {
-                opacity: 1;
-                transform: perspective(400px) rotateY(0deg);
-            }
-        }
-
-        @keyframes rollIn {
-            0% {
-                opacity: 0;
-                transform: translateX(-100%) rotate(-120deg);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0) rotate(0deg);
-            }
-        }
-
-        @keyframes bounceIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            70% {
-                transform: scale(0.9);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes rubberBand {
-            0% { transform: scale(1); }
-            30% { transform: scaleX(1.25) scaleY(0.75); }
-            40% { transform: scaleX(0.75) scaleY(1.25); }
-            50% { transform: scaleX(1.15) scaleY(0.85); }
-            65% { transform: scaleX(0.95) scaleY(1.05); }
-            75% { transform: scaleX(1.05) scaleY(0.95); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes swing {
-            20% { transform: rotate(15deg); }
-            40% { transform: rotate(-10deg); }
-            60% { transform: rotate(5deg); }
-            80% { transform: rotate(-5deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        @keyframes tada {
-            0% { transform: scale(1) rotate(0deg); }
-            10%, 20% { transform: scale(0.9) rotate(-3deg); }
-            30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
-            40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-
-        @keyframes wobble {
-            0% { transform: translateX(0); }
-            15% { transform: translateX(-25px) rotate(-5deg); }
-            30% { transform: translateX(20px) rotate(3deg); }
-            45% { transform: translateX(-15px) rotate(-3deg); }
-            60% { transform: translateX(10px) rotate(2deg); }
-            75% { transform: translateX(-5px) rotate(-1deg); }
-            100% { transform: translateX(0); }
-        }
-
-        @keyframes jello {
-            0%, 100% { transform: skewX(0deg) skewY(0deg); }
-            30% { transform: skewX(25deg) skewY(25deg); }
-            40% { transform: skewX(-20deg) skewY(-20deg); }
-            50% { transform: skewX(15deg) skewY(15deg); }
-            65% { transform: skewX(-10deg) skewY(-10deg); }
-            75% { transform: skewX(5deg) skewY(5deg); }
-        }
-
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.3); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.3); }
-            70% { transform: scale(1); }
-        }
-
-        @keyframes flash {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0; }
-        }
-
-        @keyframes shakeX {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
-        }
-
-        @keyframes shakeY {
-            0%, 100% { transform: translateY(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateY(-10px); }
-            20%, 40%, 60%, 80% { transform: translateY(10px); }
-        }
-
-        @keyframes rotateIn {
-            0% {
-                opacity: 0;
-                transform: rotate(-200deg);
-            }
-            100% {
-                opacity: 1;
-                transform: rotate(0deg);
-            }
-        }
-
-        @keyframes lightSpeedIn {
-            0% {
-                opacity: 0;
-                transform: translateX(100%) skewX(-30deg);
-            }
-            60% {
-                opacity: 1;
-                transform: translateX(-20px) skewX(20deg);
-            }
-            80% {
-                transform: translateX(0) skewX(-5deg);
-            }
-            100% {
-                transform: translateX(0) skewX(0deg);
-            }
-        }
-
-        @keyframes slideRotateIn {
-            0% {
-                opacity: 0;
-                transform: translateY(50px) rotate(-10deg);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) rotate(0deg);
-            }
-        }
-
-        @keyframes zoomBounce {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.1);
-            }
-            70% {
-                transform: scale(0.9);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        @keyframes glowPulse {
-            0%, 100% {
-                box-shadow: 0 0 5px rgba(102, 126, 234, 0.5),
-                            0 0 10px rgba(102, 126, 234, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8),
-                            0 0 30px rgba(102, 126, 234, 0.6),
-                            0 0 40px rgba(102, 126, 234, 0.4);
-            }
-        }
-
-        @keyframes slideInRotate {
-            0% {
-                opacity: 0;
-                transform: translateX(-100%) rotate(-180deg);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0) rotate(0deg);
-            }
-        }
-
-        @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0) rotate(0deg);
-            }
-            50% {
-                transform: scale(1.2) rotate(180deg);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotate(360deg);
-            }
-        }
-
-        /* Animation Classes */
-        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
-        .fade-in-down { animation: fadeInDown 0.6s ease-out forwards; }
-        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
-        .fade-in-left { animation: fadeInLeft 0.6s ease-out forwards; }
-        .fade-in-right { animation: fadeInRight 0.6s ease-out forwards; }
-        .slide-in-right { animation: slideInRight 0.6s ease-out forwards; }
-        .slide-in-left { animation: slideInLeft 0.6s ease-out forwards; }
-        .slide-in-up { animation: slideInUp 0.6s ease-out forwards; }
-        .slide-in-down { animation: slideInDown 0.6s ease-out forwards; }
-        .zoom-in { animation: zoomIn 0.5s ease-out forwards; }
-        .animate-pulse { animation: pulse 2s ease-in-out infinite; }
-        .animate-bounce { animation: bounce 2s ease-in-out infinite; }
-        .animate-float { animation: float 3s ease-in-out infinite; }
-        .animate-rotate { animation: rotate 20s linear infinite; }
-        .animate-spin { animation: spin 1s linear infinite; }
-        
-        /* New Animation Classes */
-        .flip-in-x { animation: flipInX 0.8s ease-out forwards; }
-        .flip-in-y { animation: flipInY 0.8s ease-out forwards; }
-        .roll-in { animation: rollIn 0.8s ease-out forwards; }
-        .bounce-in { animation: bounceIn 0.8s ease-out forwards; }
-        .rubber-band { animation: rubberBand 1s ease-out; }
-        .swing { animation: swing 1s ease-out; }
-        .tada { animation: tada 1s ease-out; }
-        .wobble { animation: wobble 1s ease-out; }
-        .jello { animation: jello 1s ease-out; }
-        .heart-beat { animation: heartBeat 1.3s ease-in-out infinite; }
-        .flash { animation: flash 2s ease-in-out infinite; }
-        .shake-x { animation: shakeX 0.8s ease-out; }
-        .shake-y { animation: shakeY 0.8s ease-out; }
-        .rotate-in { animation: rotateIn 0.8s ease-out forwards; }
-        .light-speed-in { animation: lightSpeedIn 0.8s ease-out forwards; }
-        .slide-rotate-in { animation: slideRotateIn 0.8s ease-out forwards; }
-        .zoom-bounce { animation: zoomBounce 0.8s ease-out forwards; }
-        .glow-pulse { animation: glowPulse 2s ease-in-out infinite; }
-        .slide-in-rotate { animation: slideInRotate 0.8s ease-out forwards; }
-        .pop-in { animation: popIn 0.8s ease-out forwards; }
-
-        /* Hover Animations */
-        .hover-tada:hover { animation: tada 1s ease-out; }
-        .hover-swing:hover { animation: swing 1s ease-out; }
-        .hover-wobble:hover { animation: wobble 1s ease-out; }
-        .hover-jello:hover { animation: jello 1s ease-out; }
-        .hover-rubber-band:hover { animation: rubberBand 1s ease-out; }
-        .hover-pulse:hover { animation: pulse 0.5s ease-out; }
-        .hover-heart-beat:hover { animation: heartBeat 1s ease-out; }
-        .hover-shake-x:hover { animation: shakeX 0.5s ease-out; }
-        .hover-shake-y:hover { animation: shakeY 0.5s ease-out; }
-
-        /* Scroll Animation Observer */
-        .scroll-animate {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .scroll-animate.animated {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ==================== HERO SECTION ==================== */
-        .hero-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            position: relative;
-            overflow: hidden;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            }
-            33% {
-                background: linear-gradient(135deg, #f093fb 0%, #667eea 50%, #764ba2 100%);
-            }
-            66% {
-                background: linear-gradient(135deg, #764ba2 0%, #f093fb 50%, #667eea 100%);
-            }
-        }
-
-        .hero-gradient::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(255,255,255,0.1) 0%, transparent 40%);
-            animation: floatComplex 20s ease-in-out infinite;
-        }
-
-        @keyframes floatComplex {
-            0%, 100% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            33% {
-                transform: translate(30px, -30px) rotate(120deg);
-            }
-            66% {
-                transform: translate(-30px, 30px) rotate(240deg);
-            }
-        }
-
-        .hero-gradient::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse at 10% 20%, rgba(255,255,255,0.2) 0%, transparent 60%),
-                radial-gradient(ellipse at 90% 80%, rgba(255,255,255,0.2) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-
-        .hero-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
-            border-radius: 50%;
-            animation: floatGlow 6s ease-in-out infinite;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5),
-                        0 0 40px rgba(255, 255, 255, 0.3),
-                        0 0 60px rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes floatGlow {
-            0%, 100% {
-                transform: translateY(0) scale(1);
-                opacity: 0.6;
-            }
-            25% {
-                transform: translateY(-30px) scale(1.2);
-                opacity: 1;
-            }
-            50% {
-                transform: translateY(-60px) scale(0.8);
-                opacity: 0.4;
-            }
-            75% {
-                transform: translateY(-30px) scale(1.1);
-                opacity: 0.8;
-            }
-        }
-
-        .hero-shape {
-            position: absolute;
-            opacity: 0.1;
-        }
-
-        .hero-shape-1 {
-            top: 10%;
-            left: 5%;
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .hero-shape-2 {
-            bottom: 15%;
-            right: 10%;
-            width: 150px;
-            height: 150px;
-            background: white;
-            border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
-            animation: float 10s ease-in-out infinite reverse;
-        }
-
-        .hero-shape-3 {
-            top: 50%;
-            right: 5%;
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 50%;
-            animation: float 5s ease-in-out infinite;
-        }
-
-        /* ==================== ADVANCED EFFECTS ==================== */
-        .glow-effect {
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5),
-                        0 0 40px rgba(102, 126, 234, 0.3),
-                        0 0 60px rgba(102, 126, 234, 0.2);
-            animation: glow-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes glow-pulse {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(102, 126, 234, 0.5),
-                            0 0 40px rgba(102, 126, 234, 0.3),
-                            0 0 60px rgba(102, 126, 234, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(102, 126, 234, 0.7),
-                            0 0 60px rgba(102, 126, 234, 0.5),
-                            0 0 90px rgba(102, 126, 234, 0.3);
-            }
-        }
-
-        .shake-on-hover:hover {
-            animation: shake 0.5s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-
-        .bounce-in {
-            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        @keyframes bounceIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.3);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            70% {
-                transform: scale(0.9);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hover-lift {
-            transition: all 0.3s ease;
-        }
-
-        .hover-lift:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ==================== CARDS ==================== */
-        .card {
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 30%,
-                rgba(102, 126, 234, 0.3) 50%,
-                transparent 70%
-            );
-            opacity: 0;
-            transition: all 0.6s ease;
-            pointer-events: none;
-            transform: rotate(0deg);
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.05), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-
-        .card:hover {
-            transform: translateY(-15px) scale(1.03) rotateX(5deg);
-            box-shadow: 
-                0 30px 60px rgba(102, 126, 234, 0.3),
-                0 0 0 1px rgba(102, 126, 234, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-            transform: rotate(180deg);
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
-        /* ==================== BUTTONS ==================== */
-        .btn {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-radius: 16px;
-            font-weight: 700;
-            padding: 16px 32px;
-            cursor: pointer;
-            border: none;
-            outline: none;
-            position: relative;
-            overflow: hidden;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 1.05rem;
-            letter-spacing: 0.5px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
-            transform: translate(-50%, -50%);
-            transition: width 0.7s ease, height 0.7s ease;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent 30%,
-                rgba(255, 255, 255, 0.2) 50%,
-                transparent 70%
-            );
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%) translateY(-100%) rotate(45deg);
-            }
-            100% {
-                transform: translateX(100%) translateY(100%) rotate(45deg);
-            }
-        }
-
-        .btn:hover::before {
-            width: 500px;
-            height: 500px;
-        }
-
-        .btn:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 
-                0 15px 35px rgba(102, 126, 234, 0.4),
-                0 5px 15px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 200% 200%;
-            color: white;
-            animation: gradientMove 5s ease infinite;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        @keyframes gradientMove {
-            0%, 100% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid currentColor;
-        }
-
-        .btn-outline:hover {
-            background: currentColor;
-            color: white;
-        }
-
-        /* ==================== NAVIGATION ==================== */
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-            padding: 10px 18px;
-            cursor: pointer;
-            border-radius: 8px;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 3px;
-            background: currentColor;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .nav-link:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
-            width: 80%;
-        }
-
-        .nav-link.active {
-            font-weight: 600;
-        }
-
-        /* ==================== UTILITY CLASSES ==================== */
-        .shadow-custom {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .blur-bg {
-            backdrop-filter: blur(15px) saturate(180%);
-            background: rgba(255, 255, 255, 0.85);
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-            position: relative;
-        }
-
-        .blur-bg::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%,
-                rgba(102, 126, 234, 0.5) 25%,
-                rgba(118, 75, 162, 0.5) 50%,
-                rgba(240, 147, 251, 0.5) 75%,
-                transparent 100%
-            );
-            animation: headerGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes headerGlow {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scaleX(0.8);
-            }
-            50% {
-                opacity: 1;
-                transform: scaleX(1);
-            }
-        }
-
-        /* ==================== NOTIFICATION BADGE ==================== */
-        .notification-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 700;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 2px 8px rgba(245, 101, 101, 0.4);
-        }
-
-        /* ==================== STATS ==================== */
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-            padding: 24px;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.1), transparent);
-            animation: rotate 10s linear infinite;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            color: #718096;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .stat-icon {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            font-size: 3rem;
-            opacity: 0.1;
-        }
-
-        .stat-change {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-
-        .stat-change.positive {
-            color: #48bb78;
-        }
-
-        /* ==================== FEATURE ICONS ==================== */
-        .feature-icon {
-            width: 90px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 20px;
-            font-size: 2.8rem;
-            margin: 0 auto 24px;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(255,255,255,0.3), transparent 50%);
-            animation: rotateGlow 8s linear infinite;
-        }
-
-        .feature-icon::after {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            border-radius: 18px;
-            background: inherit;
-            filter: blur(10px);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        @keyframes rotateGlow {
-            0% {
-                transform: rotate(0deg) scale(1);
-            }
-            50% {
-                transform: rotate(180deg) scale(1.1);
-            }
-            100% {
-                transform: rotate(360deg) scale(1);
-            }
-        }
-
-        .feature-icon:hover {
-            transform: scale(1.2) rotate(15deg) translateY(-10px);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.25),
-                0 0 30px rgba(102, 126, 234, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        }
-
-        .feature-icon:hover::after {
-            opacity: 0.6;
-        }
-
-        /* ==================== TESTIMONIALS ==================== */
-        .testimonial-card {
-            padding: 32px;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .testimonial-card::before {
-            content: '"';
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 4rem;
-            color: rgba(102, 126, 234, 0.1);
-            font-family: Georgia, serif;
-            line-height: 1;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .testimonial-content {
-            position: relative;
-            z-index: 1;
-            margin-bottom: 24px;
-            color: #2d3748;
-            line-height: 1.8;
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .testimonial-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-
-        .testimonial-info {
-            flex: 1;
-        }
-
-        .testimonial-name {
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .testimonial-position {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        .testimonial-rating {
-            display: flex;
-            gap: 4px;
-            margin-top: 8px;
-        }
-
-        .testimonial-star {
-            color: #fbbf24;
-            font-size: 1rem;
-        }
-
-        /* ==================== PRODUCT GRID ==================== */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .product-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #f56565;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .product-info {
-            padding: 20px;
-        }
-
-        .product-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #2d3748;
-        }
-
-        .product-description {
-            font-size: 0.9rem;
-            color: #718096;
-            margin-bottom: 16px;
-            line-height: 1.5;
-        }
-
-        .product-price {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .price-current {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .price-old {
-            font-size: 1rem;
-            color: #a0aec0;
-            text-decoration: line-through;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-add-cart {
-            flex: 1;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-add-cart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-wishlist {
-            width: 48px;
-            height: 48px;
-            background: #f7fafc;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-wishlist:hover {
-            background: #fef5f5;
-            color: #f56565;
-        }
-
-        /* ==================== BLOG STYLES ==================== */
-        .blog-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .blog-image {
-            width: 100%;
-            height: 220px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-        }
-
-        .blog-content {
-            padding: 24px;
-        }
-
-        .blog-meta {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-            color: #718096;
-        }
-
-        .blog-meta-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .blog-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #2d3748;
-        }
-
-        .blog-excerpt {
-            color: #718096;
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-
-        .blog-read-more {
-            color: #667eea;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .blog-read-more:hover {
-            gap: 10px;
-        }
-
-        /* ==================== CONTACT FORM ==================== */
-        .contact-form {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .form-input,
-        .form-textarea {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .form-input:focus,
-        .form-textarea:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        /* ==================== RESPONSIVE ==================== */
-        @media (max-width: 768px) {
-            .ai-chat-window {
-                width: 95%;
-                max-width: 380px;
-                height: 520px;
-            }
-
-            .ai-chat-button {
-                width: 60px;
-                height: 60px;
-                font-size: 1.9rem;
-            }
-
-            .hero-gradient h2 {
-                font-size: 2rem;
-            }
-            
-            .hero-gradient p {
-                font-size: 1rem;
-            }
-
-            .stat-number {
-                font-size: 1.75rem;
-            }
-
-            .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-                gap: 16px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .ai-chat-window {
-                width: calc(100% - 16px);
-                height: 480px;
-                left: 8px;
-                bottom: 80px;
-            }
-
-            .ai-chat-button {
-                width: 56px;
-                height: 56px;
-                font-size: 1.7rem;
-                bottom: 16px;
-                left: 16px;
-            }
-
-            .hero-gradient h2 {
-                font-size: 1.75rem;
-            }
-
-            .btn {
-                padding: 12px 24px;
-                font-size: 0.875rem;
-            }
-
-            .card {
-                border-radius: 12px;
-            }
-
-            .stat-number {
-                font-size: 1.5rem;
-            }
-
-            .product-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-form {
-                padding: 24px;
-            }
-        }
-
-        /* ==================== SCROLLBAR ==================== */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
-        }
-
-        body.dark-mode ::-webkit-scrollbar-track {
-            background: #2d3748;
-        }
-
-        body.dark-mode ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        /* ==================== DARK MODE ==================== */
-        body.dark-mode {
-            background-color: #1a202c;
-            color: #e2e8f0;
-        }
-
-        body.dark-mode .card,
-        body.dark-mode .stat-card,
-        body.dark-mode .testimonial-card,
-        body.dark-mode .product-card,
-        body.dark-mode .blog-card,
-        body.dark-mode .contact-form {
-            background-color: #2d3748;
-            color: #e2e8f0;
-        }
-
-        body.dark-mode .blur-bg {
-            background: rgba(45, 55, 72, 0.9);
-        }
-
-        body.dark-mode .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode .product-title,
-        body.dark-mode .blog-title,
-        body.dark-mode .form-label {
-            color: #e2e8f0;
-        }
-
-        body.dark-mode .form-input,
-        body.dark-mode .form-textarea {
-            background: #1a202c;
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-
-        /* ==================== AUTH STYLES ==================== */
-        .btn-auth {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            border: none;
-            outline: none;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-auth::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .btn-auth:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .btn-auth:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-auth-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-auth-outline {
-            background: transparent;
-            border: 2px solid #667eea;
-            color: #667eea;
-        }
-
-        .btn-auth-outline:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Auth Modal */
-        .auth-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 20px;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .auth-modal.active {
-            display: flex;
-        }
-
-        .auth-modal-content {
-            background: white;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 480px;
-            max-height: 90%;
-            overflow-y: auto;
-            position: relative;
-            animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
-        }
-
-        body.dark-mode .auth-modal-content {
-            background: #2d3748;
-        }
-
-        .auth-modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 32px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .auth-modal-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
-            animation: rotate 20s linear infinite;
-        }
-
-        .auth-modal-header h2 {
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .auth-modal-header p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .auth-modal-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            animation: bounceIn 0.6s ease-out;
-            position: relative;
-            z-index: 1;
-        }
-
-        .auth-modal-close {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 2;
-        }
-
-        .auth-modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
-        }
-
-        .auth-modal-body {
-            padding: 40px 32px;
-        }
-
-        .auth-form-group {
-            margin-bottom: 24px;
-        }
-
-        .auth-form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2d3748;
-            font-size: 0.95rem;
-        }
-
-        body.dark-mode .auth-form-label {
-            color: #e2e8f0;
-        }
-
-        .auth-form-input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
-            background: white;
-        }
-
-        body.dark-mode .auth-form-input {
-            background: #1a202c;
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-
-        .auth-form-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        }
-
-        .auth-form-input.error {
-            border-color: #f56565;
-        }
-
-        .auth-form-error {
-            color: #f56565;
-            font-size: 0.85rem;
-            margin-top: 6px;
-            display: none;
-        }
-
-        .auth-form-error.active {
-            display: block;
-            animation: shake 0.5s ease-out;
-        }
-
-        .auth-form-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        .auth-form-checkbox input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-
-        .auth-form-checkbox label {
-            font-size: 0.9rem;
-            color: #4a5568;
-            cursor: pointer;
-        }
-
-        body.dark-mode .auth-form-checkbox label {
-            color: #cbd5e0;
-        }
-
-        .auth-submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .auth-submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .auth-submit-btn:hover::before {
-            width: 400px;
-            height: 400px;
-        }
-
-        .auth-submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .auth-submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .auth-submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .auth-divider {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 32px 0;
-            color: #718096;
-            font-size: 0.9rem;
-        }
-
-        .auth-divider::before,
-        .auth-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        body.dark-mode .auth-divider::before,
-        body.dark-mode .auth-divider::after {
-            background: #4a5568;
-        }
-
-        .auth-social-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .auth-social-btn {
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        body.dark-mode .auth-social-btn {
-            background: #1a202c;
-            border-color: #4a5568;
-            color: #e2e8f0;
-        }
-
-        .auth-social-btn:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .auth-footer {
-            text-align: center;
-            padding: 24px 32px;
-            border-top: 1px solid #e2e8f0;
-            color: #718096;
-            font-size: 0.95rem;
-        }
-
-        body.dark-mode .auth-footer {
-            border-top-color: #4a5568;
-        }
-
-        .auth-footer a {
-            color: #667eea;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .auth-footer a:hover {
-            color: #764ba2;
-            text-decoration: underline;
-        }
-
-        .auth-success-message {
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-            color: white;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: none;
-            align-items: center;
-            gap: 12px;
-            animation: slideInDown 0.4s ease-out;
-        }
-
-        .auth-success-message.active {
-            display: flex;
-        }
-
-        .auth-success-message svg {
-            width: 24px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-
-        /* Profile Dropdown */
-        #profile-dropdown {
-            animation: slideInDown 0.3s ease-out;
-        }
-
-        body.dark-mode #profile-dropdown {
-            background: #2d3748;
-            border-color: #4a5568;
-        }
-
-        body.dark-mode #profile-dropdown a {
-            color: #e2e8f0;
-        }
-
-        body.dark-mode #profile-dropdown a:hover {
-            background: #1a202c;
-        }
-
-        /* Loading Spinner */
-        .auth-loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @media (max-width: 640px) {
-            .auth-modal-content {
-                max-width: 100%;
-                border-radius: 16px;
-            }
-
-            .auth-modal-header {
-                padding: 24px;
-            }
-
-            .auth-modal-header h2 {
-                font-size: 1.5rem;
-            }
-
-            .auth-modal-body {
-                padding: 24px 20px;
-            }
-
-            .auth-social-buttons {
-                grid-template-columns: 1fr;
-            }
-
-            .btn-auth {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-
-            .btn-auth span {
-                display: none;
-            }
-
-            .btn-auth svg {
-                margin: 0;
-            }
-        }
-    </style>
+    body {
+      box-sizing: border-box;
+      height: 100%;
+      margin: 0;
+      transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Page Management */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ==================== NAVIGATION HEADER ==================== */
+    .main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .navbar {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #2d3748;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .mobile-menu-toggle span {
+      width: 25px;
+      height: 3px;
+      background: #2d3748;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-menu {
+      display: flex;
+      list-style: none;
+      gap: 5px;
+      margin: 0;
+      padding: 0;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 20px;
+      color: #2d3748;
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-link:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    .nav-link.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .dropdown-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-dropdown:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      list-style: none;
+      padding: 10px;
+      margin: 5px 0 0 0;
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+    }
+
+    .nav-dropdown:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu li {
+      margin: 0;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 12px 16px;
+      color: #2d3748;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-menu a:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      transform: translateX(-5px);
+    }
+
+    .nav-auth {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-login,
+    .btn-register {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-size: 0.95rem;
+    }
+
+    .btn-login {
+      background: transparent;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-login:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    /* ==================== PRODUCTS SECTION ==================== */
+    .products-section,
+    .about-section,
+    .contact-section,
+    .auth-section {
+      min-height: 100%;
+      padding: 120px 20px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .products-section::before,
+    .about-section::before,
+    .contact-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 60%);
+      animation: background-float 20s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes background-float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+      66% {
+        transform: translate(-30px, 30px) scale(0.9);
+      }
+    }
+
+    .products-container,
+    .about-container,
+    .contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Parallax mouse effect for product cards */
+    @media (hover: hover) and (pointer: fine) {
+      .product-card {
+        transition: all 0.3s ease;
+      }
+    }
+
+    .section-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      text-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      animation: title-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes title-glow {
+      0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.3));
+      }
+      50% {
+        filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
+      }
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #718096;
+      margin-bottom: 50px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+      margin-top: 60px;
+      perspective: 1000px;
+    }
+
+    .product-card {
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.1),
+        0 1px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transform: scaleX(0);
+      transition: transform 0.5s ease;
+      z-index: 1;
+    }
+
+    .product-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    .product-card:hover {
+      transform: translateY(-20px) rotateX(5deg) scale(1.02);
+      box-shadow: 
+        0 30px 60px rgba(102, 126, 234, 0.25),
+        0 15px 30px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    }
+
+    .product-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .product-card:hover::after {
+      opacity: 1;
+    }
+
+    .product-card.featured {
+      border: 2px solid #667eea;
+      background: linear-gradient(145deg, #ffffff, #f0f4ff);
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% {
+        box-shadow: 
+          0 10px 30px rgba(0, 0, 0, 0.1),
+          0 0 20px rgba(102, 126, 234, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      }
+      50% {
+        box-shadow: 
+          0 10px 30px rgba(0, 0, 0, 0.1),
+          0 0 40px rgba(102, 126, 234, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      }
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      animation: badge-float 3s ease-in-out infinite;
+      z-index: 2;
+    }
+
+    @keyframes badge-float {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-5px) scale(1.05);
+      }
+    }
+
+    .product-icon {
+      font-size: 4rem;
+      margin-bottom: 25px;
+      display: inline-block;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      filter: drop-shadow(0 5px 15px rgba(102, 126, 234, 0.3));
+      transform-style: preserve-3d;
+    }
+
+    .product-card:hover .product-icon {
+      transform: translateZ(30px) rotateY(360deg) scale(1.2);
+      filter: drop-shadow(0 10px 25px rgba(102, 126, 234, 0.5));
+    }
+
+    .product-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #2d3748;
+    }
+
+    .product-description {
+      color: #718096;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .product-features {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    .product-features li {
+      padding: 8px 0;
+      color: #4a5568;
+      font-size: 0.95rem;
+    }
+
+    .product-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      margin-top: 15px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      transform-style: preserve-3d;
+    }
+
+    .product-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .product-btn:hover {
+      transform: translateZ(10px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+    }
+
+    .product-btn:hover::before {
+      left: 100%;
+    }
+
+    .product-btn:active {
+      transform: translateZ(5px) scale(0.98);
+    }
+
+    /* ==================== ABOUT SECTION ==================== */
+    .about-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .about-text {
+      background: white;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .about-heading {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin: 30px 0 15px;
+    }
+
+    .about-heading:first-child {
+      margin-top: 0;
+    }
+
+    .about-paragraph {
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: #4a5568;
+      margin-bottom: 20px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 25px;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      border-radius: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: #4a5568;
+      font-weight: 600;
+    }
+
+    /* ==================== CONTACT SECTION ==================== */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .contact-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+    }
+
+    .contact-icon {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+
+    .contact-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+
+    .contact-card p {
+      color: #718096;
+      font-size: 1rem;
+    }
+
+    .contact-form {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    /* ==================== AUTH PAGES ==================== */
+    .auth-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .auth-box {
+      background: white;
+      padding: 50px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-title {
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      color: #718096;
+      margin-bottom: 35px;
+    }
+
+    .auth-form {
+      margin-bottom: 25px;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #4a5568;
+    }
+
+    .checkbox-label input {
+      width: auto;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .auth-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .auth-submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .auth-divider {
+      text-align: center;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .auth-divider::before {
+      right: 0;
+    }
+
+    .auth-divider::after {
+      left: 0;
+    }
+
+    .auth-divider span {
+      background: white;
+      padding: 0 15px;
+      color: #718096;
+      position: relative;
+    }
+
+    .social-login {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .social-btn {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .social-btn:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 25px;
+      color: #4a5568;
+    }
+
+    .auth-switch a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+
+    /* ==================== AI CHAT BOT - ENHANCED ==================== */
+    .ai-chat-widget {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    .ai-chat-button {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
+                  0 0 0 0 rgba(102, 126, 234, 0.7);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      font-size: 2.2rem;
+      border: none;
+      position: relative;
+      overflow: hidden;
+      animation: pulse-ring 2s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
+                    0 0 0 0 rgba(102, 126, 234, 0.7);
+      }
+      50% {
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
+                    0 0 0 15px rgba(102, 126, 234, 0);
+      }
+      100% {
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5),
+                    0 0 0 0 rgba(102, 126, 234, 0);
+      }
+    }
+
+    .ai-chat-button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+      animation: rotate 3s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .ai-chat-button:hover {
+      transform: scale(1.15);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.7);
+    }
+
+    .ai-chat-button.active {
+      transform: scale(0.95);
+    }
+
+    .ai-chat-pulse {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 22px;
+      height: 22px;
+      background: #48bb78;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+      border: 3px solid white;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
+    .ai-chat-window {
+      position: absolute;
+      bottom: 90px;
+      left: 0;
+      width: 420px;
+      height: 600px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideInUp 0.4s ease-out;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .ai-chat-window.active {
+      display: flex;
+    }
+
+    body.dark-mode .ai-chat-window {
+      background: #2d3748;
+    }
+
+    .ai-chat-header {
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ai-chat-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      pointer-events: none;
+    }
+
+    .ai-chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ai-chat-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .ai-chat-status {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-chat-name {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 2px;
+    }
+
+    .ai-chat-online {
+      font-size: 0.85rem;
+      opacity: 0.95;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ai-chat-online::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #48bb78;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .ai-chat-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+    }
+
+    .ai-chat-close:hover {
+      background: rgba(255,255,255,0.3);
+      transform: rotate(90deg);
+    }
+
+    .ai-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #f7fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    body.dark-mode .ai-chat-messages {
+      background: #1a202c;
+    }
+
+    .ai-message {
+      display: flex;
+      gap: 12px;
+      animation: messageSlide 0.4s ease-out;
+    }
+
+    @keyframes messageSlide {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .ai-message.user {
+      flex-direction: row-reverse;
+    }
+
+    .ai-message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .ai-message.bot .ai-message-avatar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .ai-message.user .ai-message-avatar {
+      background: #4299e1;
+      color: white;
+    }
+
+    .ai-message-content {
+      max-width: 75%;
+      padding: 14px 18px;
+      border-radius: 18px;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .ai-message.bot .ai-message-content {
+      background: white;
+      color: #2d3748;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    body.dark-mode .ai-message.bot .ai-message-content {
+      background: #2d3748;
+      color: #e2e8f0;
+    }
+
+    .ai-message.user .ai-message-content {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-bottom-left-radius: 4px;
+    }
+
+    .ai-chat-typing {
+      display: flex;
+      gap: 12px;
+      padding: 14px 18px;
+      background: white;
+      border-radius: 18px;
+      border-bottom-right-radius: 4px;
+      width: fit-content;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    body.dark-mode .ai-chat-typing {
+      background: #2d3748;
+    }
+
+    .ai-typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #cbd5e0;
+      animation: typing 1.4s ease-in-out infinite;
+    }
+
+    .ai-typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .ai-typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+      }
+      30% {
+        transform: translateY(-10px);
+        opacity: 1;
+      }
+    }
+
+    .ai-chat-input-container {
+      padding: 16px 20px;
+      background: white;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    body.dark-mode .ai-chat-input-container {
+      background: #2d3748;
+      border-top-color: #4a5568;
+    }
+
+    .ai-chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 24px;
+      outline: none;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .ai-chat-input:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    body.dark-mode .ai-chat-input {
+      background: #1a202c;
+      border-color: #4a5568;
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .ai-chat-input:focus {
+      border-color: #667eea;
+    }
+
+    .ai-chat-send {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .ai-chat-send:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .ai-chat-send:active {
+      transform: scale(0.95);
+    }
+
+    /* ==================== MAIN CONTENT ==================== */
+    .hero-section {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(102, 126, 234, 0.1), transparent),
+                  radial-gradient(circle at 70% 50%, rgba(118, 75, 162, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.4rem;
+      margin-bottom: 40px;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 36px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+    }
+
+    .hero-cta:active {
+      transform: translateY(0);
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background: #1a202c;
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .hero-subtitle {
+      color: #cbd5e0;
+    }
+
+    /* Scrollbar Styling */
+    .ai-chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .ai-chat-messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .ai-chat-messages::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 3px;
+    }
+
+    body.dark-mode .ai-chat-messages::-webkit-scrollbar-thumb {
+      background: #4a5568;
+    }
+
+    /* Enhanced Responsive Design for Mobile & Desktop */
+    @media (max-width: 768px) {
+      .ai-chat-window {
+        width: calc(100vw - 20px);
+        height: calc(100% - 100px);
+        max-height: 600px;
+        left: 10px;
+        right: 10px;
+        bottom: 80px;
+      }
+
+      .hero-title {
+        font-size: 2rem;
+        padding: 0 10px;
+      }
+
+      .hero-subtitle {
+        font-size: 1rem;
+        padding: 0 15px;
+      }
+
+      .hero-cta {
+        font-size: 1rem;
+        padding: 14px 28px;
+      }
+
+      .ai-chat-widget {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 15px;
+      }
+
+      .ai-chat-button {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+      }
+
+      .ai-chat-messages {
+        padding: 15px;
+      }
+
+      .ai-message-content {
+        max-width: 80%;
+        font-size: 0.9rem;
+        padding: 12px 16px;
+      }
+
+      .ai-chat-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 1.75rem;
+      }
+
+      .hero-subtitle {
+        font-size: 0.95rem;
+      }
+
+      .ai-chat-window {
+        width: calc(100vw - 10px);
+        left: 5px;
+        right: 5px;
+      }
+
+      .ai-chat-header {
+        padding: 15px;
+      }
+
+      .ai-chat-name {
+        font-size: 1rem;
+      }
+
+      .ai-chat-online {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Windows & Desktop Optimizations */
+    @media (min-width: 769px) {
+      .ai-chat-window {
+        width: 420px;
+        height: 600px;
+      }
+
+      .hero-section {
+        padding: 80px 40px;
+      }
+
+      /* Better scrollbar for Windows */
+      .ai-chat-messages::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .ai-chat-messages::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+
+      .ai-chat-messages::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 4px;
+      }
+
+      .ai-chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #a0aec0;
+      }
+    }
+
+    /* High DPI Displays (Retina, 4K) */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .ai-chat-button {
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+      }
+
+      .ai-chat-window {
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    /* Touch Device Optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      .ai-chat-button,
+      .ai-chat-send,
+      .hero-cta {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .ai-chat-button:active {
+        transform: scale(0.92);
+      }
+
+      .ai-chat-send:active {
+        transform: scale(0.88);
+      }
+
+      .hero-cta:active {
+        transform: translateY(1px);
+      }
+
+      /* Larger touch targets for mobile */
+      .ai-chat-close {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Landscape Mobile */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .ai-chat-window {
+        height: calc(100% - 60px);
+        max-height: 400px;
+      }
+
+      .hero-section {
+        padding: 40px 20px;
+      }
+
+      .hero-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* Android-specific fixes */
+    @supports (-webkit-appearance: none) {
+      .ai-chat-input {
+        -webkit-appearance: none;
+        appearance: none;
+      }
+    }
+
+    /* Prevent text selection on buttons (better UX) */
+    .ai-chat-button,
+    .ai-chat-send,
+    .ai-chat-close,
+    .hero-cta {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+  </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body>
-  <div id="app" style="min-height: 100%; display: flex; flex-direction: column;"><!-- Header -->
-   <header class="blur-bg shadow-md sticky top-0 z-50">
-    <div class="container mx-auto px-4 py-4">
-     <div class="flex justify-between items-center">
-      <div class="flex items-center gap-3">
-       <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl animate-float" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-        🚀
-       </div>
-       <div>
-        <h1 id="site-name" class="text-2xl font-bold" style="color: #1a202c;">پلتفرم جامع هوشمند</h1>
-        <p id="site-tagline" class="text-sm" style="color: #718096;">راهکارهای پیشرفته با هوش مصنوعی</p>
-       </div>
-      </div>
-      <nav class="hidden lg:flex items-center gap-6"><a class="nav-link" href="#" data-page="home">خانه</a> <a class="nav-link" href="#" data-page="products">محصولات</a> <a class="nav-link" href="#" data-page="blog">بلاگ</a> <a class="nav-link" href="#" data-page="about">درباره ما</a> <a class="nav-link" href="#" data-page="contact">تماس</a>
-      </nav>
-      <div class="flex items-center gap-4"><button id="mobile-menu-toggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg></button> <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition">
-        <svg id="sun-icon" class="w-6 h-6" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle> <line x1="12" y1="1" x2="12" y2="3"></line> <line x1="12" y1="21" x2="12" y2="23"></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line> <line x1="1" y1="12" x2="3" y2="12"></line> <line x1="21" y1="12" x2="23" y2="12"></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-        <svg id="moon-icon" class="w-6 h-6 hidden" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg></button> <button id="notification-btn" class="relative p-2 rounded-full hover:bg-gray-100 transition hidden user-only">
-        <svg class="w-6 h-6" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /> <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg><span id="notification-count" class="notification-badge">3</span> </button> <!-- Auth Buttons (Guest) -->
-       <div id="auth-buttons" class="flex items-center gap-3"><button id="login-btn" class="btn-auth btn-auth-outline"> <span>ورود</span>
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-         </svg></button> <button id="register-btn" class="btn-auth btn-auth-primary"> <span>ثبت‌نام</span>
-         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-         </svg></button>
-       </div><!-- User Profile (Logged In) -->
-       <div id="user-profile" class="hidden user-only relative"><button id="profile-toggle" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition">
-         <div class="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;"><span id="user-avatar">ک</span>
-         </div>
-         <div class="hidden lg:block text-right">
-          <div id="user-name" class="font-bold text-sm">
-           کاربر عزیز
-          </div>
-          <div class="text-xs text-gray-500">
-           مشاهده پروفایل
-          </div>
-         </div>
-         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-         </svg></button> <!-- Dropdown Menu -->
-        <div id="profile-dropdown" class="hidden absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl overflow-hidden z-50 border border-gray-100">
-         <div class="p-4 border-b border-gray-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-          <div class="flex items-center gap-3">
-           <div class="w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold bg-white bg-opacity-20 backdrop-blur"><span id="dropdown-avatar" class="text-white">ک</span>
-           </div>
-           <div class="text-white">
-            <div id="dropdown-name" class="font-bold">
-             کاربر عزیز
-            </div>
-            <div id="dropdown-email" class="text-sm opacity-90">
-             user@example.com
-            </div>
-           </div>
-          </div>
-         </div>
-         <div class="p-2"><a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition">
-           <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-           </svg><span>پروفایل من</span> </a> <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition">
-           <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-           </svg><span>سفارشات من</span> </a> <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition">
-           <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-           </svg><span>علاقه‌مندی‌ها</span> </a> <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition">
-           <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-           </svg><span>تنظیمات</span> </a>
-         </div>
-         <div class="p-2 border-t border-gray-100"><button id="logout-btn" class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 transition w-full text-red-600">
-           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-           </svg><span>خروج از حساب</span> </button>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div><!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-200 py-4">
-     <nav class="container mx-auto px-4 flex flex-col gap-3"><a class="nav-link" href="#" data-page="home">خانه</a> <a class="nav-link" href="#" data-page="products">محصولات</a> <a class="nav-link" href="#" data-page="blog">بلاگ</a> <a class="nav-link" href="#" data-page="about">درباره ما</a> <a class="nav-link" href="#" data-page="contact">تماس</a>
-     </nav>
+ <body><!-- Navigation Header -->
+  <header class="main-header">
+   <nav class="navbar">
+    <div class="nav-logo"><span class="logo-icon">🤖</span> <span class="logo-text">پلتفرم هوشمند</span>
+    </div><button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="منوی موبایل"> <span></span> <span></span> <span></span> </button>
+    <ul class="nav-menu" id="navMenu">
+     <li><a href="#" onclick="navigateTo('home-page')" class="nav-link active">خانه</a></li>
+     <li class="nav-dropdown"><a href="#" class="nav-link">محصولات <span class="dropdown-arrow">▼</span></a>
+      <ul class="dropdown-menu">
+       <li><a href="#" onclick="navigateTo('products-ai-page')">هوش مصنوعی</a></li>
+       <li><a href="#" onclick="navigateTo('products-web-page')">طراحی وب</a></li>
+       <li><a href="#" onclick="navigateTo('products-mobile-page')">اپلیکیشن موبایل</a></li>
+      </ul></li>
+     <li><a href="#" onclick="navigateTo('about-page')" class="nav-link">درباره ما</a></li>
+     <li><a href="#" onclick="navigateTo('contact-page')" class="nav-link">تماس با ما</a></li>
+    </ul>
+    <div class="nav-auth"><button class="btn-login" onclick="navigateTo('login-page')">ورود</button> <button class="btn-register" onclick="navigateTo('register-page')">ثبت نام</button>
     </div>
-   </header><!-- Main Content -->
-   <main class="flex-1"><!-- Home Page -->
-    <div id="home-page" class="page active"><!-- Hero Section -->
-     <section id="home" class="hero-gradient py-20 px-4 relative">
-      <div class="hero-particles">
-       <div class="particle" style="width: 12px; height: 12px; top: 15%; left: 8%;"></div>
-       <div class="particle" style="width: 18px; height: 18px; top: 55%; left: 85%; animation-delay: 1s;"></div>
-       <div class="particle" style="width: 10px; height: 10px; top: 35%; left: 25%; animation-delay: 2s;"></div>
-       <div class="particle" style="width: 15px; height: 15px; top: 75%; left: 65%; animation-delay: 1.5s;"></div>
-       <div class="particle" style="width: 12px; height: 12px; top: 25%; left: 75%; animation-delay: 0.5s;"></div>
-       <div class="particle" style="width: 14px; height: 14px; top: 45%; left: 15%; animation-delay: 2.5s;"></div>
-       <div class="particle" style="width: 11px; height: 11px; top: 65%; left: 90%; animation-delay: 1.8s;"></div>
-       <div class="particle" style="width: 16px; height: 16px; top: 85%; left: 40%; animation-delay: 0.8s;"></div>
-      </div>
-      <div class="hero-shape hero-shape-1"></div>
-      <div class="hero-shape hero-shape-2"></div>
-      <div class="hero-shape hero-shape-3"></div>
-      <div class="container mx-auto text-center relative z-10">
-       <h2 id="hero-title" class="text-5xl font-bold mb-6 zoom-bounce" style="color: #ffffff; text-shadow: 0 0 30px rgba(255,255,255,0.5), 0 0 60px rgba(255,255,255,0.3), 0 4px 20px rgba(0,0,0,0.3);">به دنیای نوآوری و هوش مصنوعی خوش آمدید 🤖</h2>
-       <p id="hero-subtitle" class="text-xl mb-8 fade-in-up" style="color: #e2e8f0; animation-delay: 0.3s; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">راهکارهای هوشمند و پیشرفته با قدرت AI برای کسب‌وکار مدرن شما</p>
-       <div class="flex gap-4 justify-center flex-wrap slide-in-up" style="animation-delay: 0.6s;"><button id="hero-button" class="btn btn-primary hover-tada glow-pulse">شروع کنید ✨</button> <button class="btn btn-outline hover-swing" style="color: white; border-color: white; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">بیشتر بدانید 🚀</button>
-       </div>
-      </div>
-     </section><!-- Stats Section -->
-     <section class="py-16 px-4" style="background-color: #f7fafc;">
-      <div class="container mx-auto">
-       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="stat-card text-center scroll-animate hover-tada">
-         <div class="stat-icon">
-          👥
-         </div>
-         <div class="counter stat-number" data-target="5000">
-          0
-         </div>
-         <p class="stat-label">مشتری راضی</p>
-         <div class="stat-change positive"><span>↑</span> <span>15%</span>
-         </div>
-        </div>
-        <div class="stat-card text-center scroll-animate hover-tada">
-         <div class="stat-icon">
-          🏆
-         </div>
-         <div class="counter stat-number" data-target="1200">
-          0
-         </div>
-         <p class="stat-label">پروژه موفق</p>
-         <div class="stat-change positive"><span>↑</span> <span>22%</span>
-         </div>
-        </div>
-        <div class="stat-card text-center scroll-animate hover-tada">
-         <div class="stat-icon">
-          ⭐
-         </div>
-         <div class="counter stat-number" data-target="98">
-          0
-         </div>
-         <p class="stat-label">رضایت مشتری</p>
-         <div class="stat-change positive"><span>↑</span> <span>5%</span>
-         </div>
-        </div>
-        <div class="stat-card text-center scroll-animate hover-tada">
-         <div class="stat-icon">
-          🌍
-         </div>
-         <div class="counter stat-number" data-target="45">
-          0
-         </div>
-         <p class="stat-label">کشور</p>
-         <div class="stat-change positive"><span>↑</span> <span>8%</span>
-         </div>
-        </div>
-       </div>
-      </div>
-     </section><!-- Features Section -->
-     <section id="services" class="py-20 px-4">
-      <div class="container mx-auto">
-       <div class="text-center mb-16">
-        <h3 id="features-title" class="text-4xl font-bold mb-4">ویژگی‌های برتر ما</h3>
-        <p class="text-xl text-gray-600">چرا ما را انتخاب کنید؟</p>
-       </div>
-       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="card shadow-custom p-8 text-center scroll-animate hover-rubber-band">
-         <div class="feature-icon animate-float" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-          ⚡
-         </div>
-         <h4 id="feature-1-title" class="text-xl font-bold mb-4">سرعت فوق‌العاده</h4>
-         <p id="feature-1-desc" class="text-gray-600">عملکرد بهینه و سریع برای بهترین تجربه کاربری</p>
-        </div>
-        <div class="card shadow-custom p-8 text-center scroll-animate hover-rubber-band">
-         <div class="feature-icon animate-float" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; animation-delay: 0.5s;">
-          🔒
-         </div>
-         <h4 id="feature-2-title" class="text-xl font-bold mb-4">امنیت پیشرفته</h4>
-         <p id="feature-2-desc" class="text-gray-600">حفاظت کامل از اطلاعات با بالاترین استانداردها</p>
-        </div>
-        <div class="card shadow-custom p-8 text-center scroll-animate hover-rubber-band">
-         <div class="feature-icon animate-float" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; animation-delay: 1s;">
-          💎
-         </div>
-         <h4 id="feature-3-title" class="text-xl font-bold mb-4">کیفیت عالی</h4>
-         <p id="feature-3-desc" class="text-gray-600">محصولات با بالاترین کیفیت و استانداردهای جهانی</p>
-        </div>
-        <div class="card shadow-custom p-8 text-center scroll-animate hover-rubber-band">
-         <div class="feature-icon animate-float" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; animation-delay: 1.5s;">
-          🤖
-         </div>
-         <h4 id="feature-4-title" class="text-xl font-bold mb-4">هوش مصنوعی</h4>
-         <p id="feature-4-desc" class="text-gray-600">دستیار هوشمند 24/7 برای پاسخگویی به سوالات شما</p>
-        </div>
-       </div>
-      </div>
-     </section><!-- Testimonials -->
-     <section id="about" class="py-20 px-4" style="background-color: #f7fafc;">
-      <div class="container mx-auto">
-       <div class="text-center mb-16">
-        <h3 id="testimonials-title" class="text-4xl font-bold mb-4">نظرات مشتریان</h3>
-        <p class="text-xl text-gray-600">آنچه مشتریان ما می‌گویند</p>
-       </div>
-       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="testimonial-card scroll-animate hover-swing">
-         <p class="testimonial-content">"خدمات فوق‌العاده‌ای دریافت کردم. تیم حرفه‌ای و پشتیبانی عالی. واقعاً راضی هستم و به همه توصیه می‌کنم."</p>
-         <div class="testimonial-author">
-          <div class="testimonial-avatar animate-pulse">
-           علی
-          </div>
-          <div class="testimonial-info">
-           <div class="testimonial-name">
-            علی محمدی
-           </div>
-           <div class="testimonial-position">
-            مدیر عامل شرکت تکنو
-           </div>
-           <div class="testimonial-rating"><span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span>
-           </div>
-          </div>
-         </div>
-        </div>
-        <div class="testimonial-card scroll-animate hover-swing">
-         <p class="testimonial-content">"کیفیت محصولات بی‌نظیره. از زمان همکاری با این تیم، کسب‌وکارم رشد چشمگیری داشته است."</p>
-         <div class="testimonial-author">
-          <div class="testimonial-avatar animate-pulse">
-           سارا
-          </div>
-          <div class="testimonial-info">
-           <div class="testimonial-name">
-            سارا احمدی
-           </div>
-           <div class="testimonial-position">
-            بنیانگذار استارتاپ دیجی
-           </div>
-           <div class="testimonial-rating"><span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span>
-           </div>
-          </div>
-         </div>
-        </div>
-        <div class="testimonial-card scroll-animate hover-swing">
-         <p class="testimonial-content">"تجربه‌ای که انتظارش رو نداشتم. سرعت، کیفیت و پشتیبانی همه چیز عالی بود. حتماً دوباره استفاده می‌کنم."</p>
-         <div class="testimonial-author">
-          <div class="testimonial-avatar animate-pulse">
-           رضا
-          </div>
-          <div class="testimonial-info">
-           <div class="testimonial-name">
-            رضا کریمی
-           </div>
-           <div class="testimonial-position">
-            مدیر فروش شرکت پارس
-           </div>
-           <div class="testimonial-rating"><span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span> <span class="testimonial-star">⭐</span>
-           </div>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </section><!-- CTA Section -->
-     <section id="contact" class="py-20 px-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-      <div class="container mx-auto text-center">
-       <h3 class="text-4xl font-bold mb-6" style="color: #ffffff;">آماده شروع هستید؟</h3>
-       <p class="text-xl mb-8" style="color: #e2e8f0;">همین حالا به جمع هزاران کاربر راضی ما بپیوندید و تجربه‌ای متفاوت داشته باشید</p>
-       <div class="flex gap-4 justify-center flex-wrap"><button class="btn" style="background-color: #ffffff; color: #667eea;">همین الان شروع کنید</button> <button class="btn btn-outline" style="color: white; border-color: white;">مشاوره رایگان</button>
-       </div>
-      </div>
-     </section>
-    </div><!-- Products Page -->
-    <div id="products-page" class="page">
-     <section class="py-20 px-4">
-      <div class="container mx-auto">
-       <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">محصولات ما</h2>
-        <p class="text-xl text-gray-600">بهترین محصولات با کیفیت عالی</p>
-       </div><!-- Filter Buttons -->
-       <div class="flex flex-wrap gap-3 justify-center mb-12"><button class="btn btn-primary">همه محصولات</button> <button class="btn btn-outline" style="color: #667eea; border-color: #667eea;">الکترونیک</button> <button class="btn btn-outline" style="color: #667eea; border-color: #667eea;">پوشاک</button> <button class="btn btn-outline" style="color: #667eea; border-color: #667eea;">خانه</button>
-       </div><!-- Products Grid -->
-       <div class="product-grid">
-        <div class="product-card">
-         <div class="product-image">
-          📱 <span class="product-badge">30% تخفیف</span>
-         </div>
-         <div class="product-info">
-          <h4 class="product-title">گوشی هوشمند پرو</h4>
-          <p class="product-description">گوشی هوشمند با امکانات پیشرفته و دوربین حرفه‌ای</p>
-          <div class="product-price"><span class="price-current">12,500,000 تومان</span> <span class="price-old">18,000,000 تومان</span>
-          </div>
-          <div class="product-actions"><button class="btn-add-cart">افزودن به سبد</button> <button class="btn-wishlist">❤️</button>
-          </div>
-         </div>
-        </div>
-        <div class="product-card">
-         <div class="product-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-          💻 <span class="product-badge">جدید</span>
-         </div>
-         <div class="product-info">
-          <h4 class="product-title">لپ‌تاپ گیمینگ</h4>
-          <p class="product-description">لپ‌تاپ قدرتمند برای بازی و کارهای سنگین</p>
-          <div class="product-price"><span class="price-current">45,000,000 تومان</span>
-          </div>
-          <div class="product-actions"><button class="btn-add-cart">افزودن به سبد</button> <button class="btn-wishlist">❤️</button>
-          </div>
-         </div>
-        </div>
-        <div class="product-card">
-         <div class="product-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-          ⌚
-         </div>
-         <div class="product-info">
-          <h4 class="product-title">ساعت هوشمند</h4>
-          <p class="product-description">ساعت هوشمند با قابلیت‌های سلامتی و ورزشی</p>
-          <div class="product-price"><span class="price-current">4,500,000 تومان</span>
-          </div>
-          <div class="product-actions"><button class="btn-add-cart">افزودن به سبد</button> <button class="btn-wishlist">❤️</button>
-          </div>
-         </div>
-        </div>
-        <div class="product-card">
-         <div class="product-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-          🎧 <span class="product-badge">پرفروش</span>
-         </div>
-         <div class="product-info">
-          <h4 class="product-title">هدفون بی‌سیم</h4>
-          <p class="product-description">هدفون با کیفیت صدای عالی و نویز کنسلینگ</p>
-          <div class="product-price"><span class="price-current">2,800,000 تومان</span> <span class="price-old">3,500,000 تومان</span>
-          </div>
-          <div class="product-actions"><button class="btn-add-cart">افزودن به سبد</button> <button class="btn-wishlist">❤️</button>
-          </div>
-         </div>
-        </div>
-        <div class="product-card">
-         <div class="product-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-          📷
-         </div>
-         <div class="product-info">
-          <h4 class="product-title">دوربین دیجیتال</h4>
-          <p class="product-description">دوربین حرفه‌ای برای عکاسی و فیلمبرداری</p>
-          <div class="product-price"><span class="price-current">35,000,000 تومان</span>
-          </div>
-          <div class="product-actions"><button class="btn-add-cart">افزودن به سبد</button> <button class="btn-wishlist">❤️</button>
-          </div>
-         </div>
-        </div>
-        <div class="product-card">
-         <div class="product-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-          🎮 <span class="product-badge">20% تخفیف</span>
-         </div>
-         <div class="product-info">
-          <h4 class="product-title">کنسول بازی</h4>
-          <p class="product-description">کنسول نسل جدید با بازی‌های هیجان‌انگیز</p>
-          <div class="product-price"><span class="price-current">24,000,000 تومان</span> <span class="price-old">30,000,000 تومان</span>
-          </div>
-          <div class="product-actions"><button class="btn-add-cart">افزودن به سبد</button> <button class="btn-wishlist">❤️</button>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </section>
-    </div><!-- Blog Page -->
-    <div id="blog-page" class="page">
-     <section class="py-20 px-4">
-      <div class="container mx-auto">
-       <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">بلاگ و مقالات</h2>
-        <p class="text-xl text-gray-600">آخرین اخبار و مقالات تخصصی</p>
-       </div>
-       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="blog-card">
-         <div class="blog-image">
-          📱
-         </div>
-         <div class="blog-content">
-          <div class="blog-meta"><span class="blog-meta-item">📅 15 دی 1402</span> <span class="blog-meta-item">👤 علی محمدی</span>
-          </div>
-          <h3 class="blog-title">آینده هوش مصنوعی در ایران</h3>
-          <p class="blog-excerpt">هوش مصنوعی در حال تغییر دنیای ما است. در این مقاله به بررسی آینده AI در ایران می‌پردازیم...</p><a href="#" class="blog-read-more"> ادامه مطلب 
-           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-           </svg></a>
-         </div>
-        </div>
-        <div class="blog-card">
-         <div class="blog-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-          💻
-         </div>
-         <div class="blog-content">
-          <div class="blog-meta"><span class="blog-meta-item">📅 12 دی 1402</span> <span class="blog-meta-item">👤 سارا احمدی</span>
-          </div>
-          <h3 class="blog-title">راهنمای خرید لپ‌تاپ 2024</h3>
-          <p class="blog-excerpt">قبل از خرید لپ‌تاپ باید به چه نکاتی توجه کنید؟ راهنمای کامل انتخاب بهترین لپ‌تاپ...</p><a href="#" class="blog-read-more"> ادامه مطلب 
-           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-           </svg></a>
-         </div>
-        </div>
-        <div class="blog-card">
-         <div class="blog-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-          🔒
-         </div>
-         <div class="blog-content">
-          <div class="blog-meta"><span class="blog-meta-item">📅 10 دی 1402</span> <span class="blog-meta-item">👤 رضا کریمی</span>
-          </div>
-          <h3 class="blog-title">امنیت در فضای دیجیتال</h3>
-          <p class="blog-excerpt">چگونه از اطلاعات خود در فضای دیجیتال محافظت کنیم؟ نکات مهم امنیتی...</p><a href="#" class="blog-read-more"> ادامه مطلب 
-           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-           </svg></a>
-         </div>
-        </div>
-        <div class="blog-card">
-         <div class="blog-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-          🎨
-         </div>
-         <div class="blog-content">
-          <div class="blog-meta"><span class="blog-meta-item">📅 8 دی 1402</span> <span class="blog-meta-item">👤 مریم رضایی</span>
-          </div>
-          <h3 class="blog-title">اصول طراحی UI/UX</h3>
-          <p class="blog-excerpt">طراحی رابط کاربری موثر چه ویژگی‌هایی دارد؟ اصول طراحی تجربه کاربری...</p><a href="#" class="blog-read-more"> ادامه مطلب 
-           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-           </svg></a>
-         </div>
-        </div>
-        <div class="blog-card">
-         <div class="blog-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-          🚀
-         </div>
-         <div class="blog-content">
-          <div class="blog-meta"><span class="blog-meta-item">📅 5 دی 1402</span> <span class="blog-meta-item">👤 امیر حسینی</span>
-          </div>
-          <h3 class="blog-title">استارتاپ‌های موفق ایرانی</h3>
-          <p class="blog-excerpt">داستان موفقیت استارتاپ‌های ایرانی و درس‌هایی که می‌توانیم از آنها بگیریم...</p><a href="#" class="blog-read-more"> ادامه مطلب 
-           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-           </svg></a>
-         </div>
-        </div>
-        <div class="blog-card">
-         <div class="blog-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-          💡
-         </div>
-         <div class="blog-content">
-          <div class="blog-meta"><span class="blog-meta-item">📅 3 دی 1402</span> <span class="blog-meta-item">👤 فاطمه نوری</span>
-          </div>
-          <h3 class="blog-title">نوآوری در کسب‌وکار</h3>
-          <p class="blog-excerpt">چگونه می‌توان با نوآوری، کسب‌وکار خود را متحول کرد؟ استراتژی‌های موثر...</p><a href="#" class="blog-read-more"> ادامه مطلب 
-           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-           </svg></a>
-         </div>
-        </div>
-       </div>
-      </div>
-     </section>
-    </div><!-- About Page -->
-    <div id="about-page" class="page">
-     <section class="py-20 px-4">
-      <div class="container mx-auto">
-       <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">درباره ما</h2>
-        <p class="text-xl text-gray-600">داستان ما و تیم حرفه‌ای</p>
-       </div>
-       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
-        <div>
-         <h3 class="text-3xl font-bold mb-6">ماموریت ما</h3>
-         <p class="text-lg text-gray-600 mb-6 leading-relaxed">ما با هدف ارائه بهترین راهکارهای دیجیتال و استفاده از جدیدترین تکنولوژی‌ها، در تلاش هستیم تا تجربه‌ای بی‌نظیر برای مشتریان خود فراهم کنیم.</p>
-         <p class="text-lg text-gray-600 mb-6 leading-relaxed">تیم ما متشکل از متخصصان با تجربه در زمینه‌های مختلف فناوری اطلاعات، طراحی و توسعه نرم‌افزار است که با تعهد و پشتکار، پروژه‌های شما را به بهترین شکل ممکن اجرا می‌کنند.</p>
-         <div class="flex gap-4"><button class="btn btn-primary">تماس با ما</button> <button class="btn btn-outline" style="color: #667eea; border-color: #667eea;">مشاهده نمونه کارها</button>
-         </div>
-        </div>
-        <div class="grid grid-cols-2 gap-6">
-         <div class="card p-6 text-center">
-          <div class="text-5xl mb-4">
-           🎯
-          </div>
-          <h4 class="text-xl font-bold mb-2">هدفمند</h4>
-          <p class="text-gray-600">تمرکز بر اهداف مشتری</p>
-         </div>
-         <div class="card p-6 text-center">
-          <div class="text-5xl mb-4">
-           💡
-          </div>
-          <h4 class="text-xl font-bold mb-2">نوآور</h4>
-          <p class="text-gray-600">استفاده از فناوری‌های روز</p>
-         </div>
-         <div class="card p-6 text-center">
-          <div class="text-5xl mb-4">
-           🤝
-          </div>
-          <h4 class="text-xl font-bold mb-2">قابل اعتماد</h4>
-          <p class="text-gray-600">شفافیت و صداقت</p>
-         </div>
-         <div class="card p-6 text-center">
-          <div class="text-5xl mb-4">
-           ⚡
-          </div>
-          <h4 class="text-xl font-bold mb-2">سریع</h4>
-          <p class="text-gray-600">تحویل به موقع پروژه‌ها</p>
-         </div>
-        </div>
-       </div><!-- Team Section -->
-       <div class="text-center mb-12">
-        <h3 class="text-3xl font-bold mb-4">تیم ما</h3>
-        <p class="text-xl text-gray-600">متخصصان با تجربه و حرفه‌ای</p>
-       </div>
-       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="card p-6 text-center hover-lift">
-         <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-          👨‍💼
-         </div>
-         <h4 class="text-xl font-bold mb-2">علی محمدی</h4>
-         <p class="text-gray-600 mb-3">مدیر عامل</p>
-         <div class="flex gap-3 justify-center"><a href="#" class="text-gray-600 hover:text-blue-600">🔗</a> <a href="#" class="text-gray-600 hover:text-blue-600">📧</a>
-         </div>
-        </div>
-        <div class="card p-6 text-center hover-lift">
-         <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-          👩‍💻
-         </div>
-         <h4 class="text-xl font-bold mb-2">سارا احمدی</h4>
-         <p class="text-gray-600 mb-3">مدیر فنی</p>
-         <div class="flex gap-3 justify-center"><a href="#" class="text-gray-600 hover:text-blue-600">🔗</a> <a href="#" class="text-gray-600 hover:text-blue-600">📧</a>
-         </div>
-        </div>
-        <div class="card p-6 text-center hover-lift">
-         <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
-          👨‍🎨
-         </div>
-         <h4 class="text-xl font-bold mb-2">رضا کریمی</h4>
-         <p class="text-gray-600 mb-3">طراح ارشد</p>
-         <div class="flex gap-3 justify-center"><a href="#" class="text-gray-600 hover:text-blue-600">🔗</a> <a href="#" class="text-gray-600 hover:text-blue-600">📧</a>
-         </div>
-        </div>
-        <div class="card p-6 text-center hover-lift">
-         <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
-          👩‍💼
-         </div>
-         <h4 class="text-xl font-bold mb-2">مریم رضایی</h4>
-         <p class="text-gray-600 mb-3">مدیر بازاریابی</p>
-         <div class="flex gap-3 justify-center"><a href="#" class="text-gray-600 hover:text-blue-600">🔗</a> <a href="#" class="text-gray-600 hover:text-blue-600">📧</a>
-         </div>
-        </div>
-       </div>
-      </div>
-     </section>
-    </div><!-- Contact Page -->
-    <div id="contact-page" class="page">
-     <section class="py-20 px-4">
-      <div class="container mx-auto">
-       <div class="text-center mb-16">
-        <h2 class="text-4xl font-bold mb-4">تماس با ما</h2>
-        <p class="text-xl text-gray-600">ما همیشه آماده پاسخگویی به شما هستیم</p>
-       </div>
-       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12"><!-- Contact Form -->
-        <div class="contact-form">
-         <h3 class="text-2xl font-bold mb-6">فرم تماس</h3>
-         <form id="contact-form">
-          <div class="form-group"><label for="contact-name" class="form-label">نام و نام خانوادگی</label> <input type="text" id="contact-name" class="form-input" placeholder="نام خود را وارد کنید" required>
-          </div>
-          <div class="form-group"><label for="contact-email" class="form-label">ایمیل</label> <input type="email" id="contact-email" class="form-input" placeholder="example@email.com" required>
-          </div>
-          <div class="form-group"><label for="contact-phone" class="form-label">شماره تماس</label> <input type="tel" id="contact-phone" class="form-input" placeholder="09123456789" required>
-          </div>
-          <div class="form-group"><label for="contact-subject" class="form-label">موضوع</label> <input type="text" id="contact-subject" class="form-input" placeholder="موضوع پیام خود را وارد کنید" required>
-          </div>
-          <div class="form-group"><label for="contact-message" class="form-label">پیام</label> <textarea id="contact-message" class="form-textarea" placeholder="پیام خود را بنویسید..." required></textarea>
-          </div><button type="submit" class="btn btn-primary w-full">ارسال پیام</button>
-         </form>
-        </div><!-- Contact Info -->
-        <div>
-         <h3 class="text-2xl font-bold mb-6">اطلاعات تماس</h3>
-         <div class="space-y-6">
-          <div class="card p-6 flex items-start gap-4">
-           <div class="text-3xl">
-            📍
-           </div>
-           <div>
-            <h4 class="font-bold mb-2">آدرس دفتر</h4>
-            <p class="text-gray-600">تهران، خیابان ولیعصر، نرسیده به میدان ونک، پلاک 123، طبقه 5</p>
-           </div>
-          </div>
-          <div class="card p-6 flex items-start gap-4">
-           <div class="text-3xl">
-            📞
-           </div>
-           <div>
-            <h4 class="font-bold mb-2">تلفن تماس</h4>
-            <p class="text-gray-600">021-12345678</p>
-            <p class="text-gray-600">0912-3456789</p>
-           </div>
-          </div>
-          <div class="card p-6 flex items-start gap-4">
-           <div class="text-3xl">
-            📧
-           </div>
-           <div>
-            <h4 class="font-bold mb-2">ایمیل</h4>
-            <p class="text-gray-600">info@platform.com</p>
-            <p class="text-gray-600">support@platform.com</p>
-           </div>
-          </div>
-          <div class="card p-6 flex items-start gap-4">
-           <div class="text-3xl">
-            🕐
-           </div>
-           <div>
-            <h4 class="font-bold mb-2">ساعات کاری</h4>
-            <p class="text-gray-600">شنبه تا چهارشنبه: 9:00 - 18:00</p>
-            <p class="text-gray-600">پنج‌شنبه: 9:00 - 13:00</p>
-            <p class="text-gray-600">جمعه: تعطیل</p>
-           </div>
-          </div>
-         </div>
-         <div class="mt-8">
-          <h4 class="font-bold mb-4">شبکه‌های اجتماعی</h4>
-          <div class="flex gap-4"><a href="#" class="w-12 h-12 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">📱</a> <a href="#" class="w-12 h-12 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">💬</a> <a href="#" class="w-12 h-12 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">🔗</a> <a href="#" class="w-12 h-12 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">📧</a>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </section>
+   </nav>
+  </header><!-- Main Hero Section -->
+  <main class="page active" id="home-page">
+   <section class="hero-section">
+    <div class="hero-content">
+     <h1 class="hero-title" id="hero-title">پلتفرم جامع با هوش مصنوعی</h1>
+     <p class="hero-subtitle" id="hero-subtitle">تجربه‌ای نوین از تعامل با هوش مصنوعی پیشرفته. سوالات خود را بپرسید و پاسخ‌های هوشمند دریافت کنید.</p><button class="hero-cta" onclick="openChat()"> <span>شروع گفتگو</span> <span>💬</span> </button>
     </div>
-   </main><!-- Footer -->
-   <footer class="py-12 px-4" style="background-color: #2d3748; color: #e2e8f0;">
-    <div class="container mx-auto text-center">
-     <div class="mb-6">
-      <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-       🚀
+   </section>
+  </main><!-- Products - AI Page -->
+  <main class="page" id="products-ai-page">
+   <section class="products-section">
+    <div class="products-container">
+     <h1 class="section-title">محصولات هوش مصنوعی</h1>
+     <p class="section-subtitle">راهکارهای پیشرفته هوش مصنوعی برای کسب و کار شما</p>
+     <div class="products-grid">
+      <div class="product-card">
+       <div class="product-icon">
+        🤖
+       </div>
+       <h3 class="product-title">چت‌بات هوشمند</h3>
+       <p class="product-description">چت‌بات پیشرفته با قابلیت درک زبان طبیعی فارسی و پاسخگویی ۲۴/۷</p>
+       <ul class="product-features">
+        <li>✓ پردازش زبان طبیعی</li>
+        <li>✓ یادگیری ماشین</li>
+        <li>✓ پشتیبانی ۲۴ ساعته</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
       </div>
-      <h3 class="text-2xl font-bold mb-2">پلتفرم جامع هوشمند</h3>
-      <p class="text-gray-400">راهکارهای پیشرفته با هوش مصنوعی</p>
-     </div>
-     <div class="border-t border-gray-600 pt-6">
-      <p id="footer-text" class="text-gray-400">© 2024 تمامی حقوق محفوظ است. ساخته شده با ❤️</p>
+      <div class="product-card featured">
+       <div class="featured-badge">
+        محبوب
+       </div>
+       <div class="product-icon">
+        🧠
+       </div>
+       <h3 class="product-title">تحلیل داده هوشمند</h3>
+       <p class="product-description">تحلیل و پردازش حجم عظیم داده‌ها با استفاده از الگوریتم‌های پیشرفته</p>
+       <ul class="product-features">
+        <li>✓ تحلیل پیشرفته</li>
+        <li>✓ گزارش‌گیری خودکار</li>
+        <li>✓ پیش‌بینی روندها</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
+      </div>
+      <div class="product-card">
+       <div class="product-icon">
+        🎯
+       </div>
+       <h3 class="product-title">سیستم توصیه‌گر</h3>
+       <p class="product-description">سیستم هوشمند توصیه محصول و محتوا بر اساس رفتار کاربران</p>
+       <ul class="product-features">
+        <li>✓ شخصی‌سازی محتوا</li>
+        <li>✓ افزایش فروش</li>
+        <li>✓ تجربه کاربری بهتر</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
+      </div>
      </div>
     </div>
-   </footer><!-- Login Modal -->
-   <div id="login-modal" class="auth-modal">
-    <div class="auth-modal-content">
-     <div class="auth-modal-header"><button class="auth-modal-close" id="login-modal-close">×</button>
-      <div class="auth-modal-icon">
-       🔐
+   </section>
+  </main><!-- Products - Web Page -->
+  <main class="page" id="products-web-page">
+   <section class="products-section">
+    <div class="products-container">
+     <h1 class="section-title">طراحی و توسعه وب</h1>
+     <p class="section-subtitle">وبسایت‌های مدرن و حرفه‌ای برای کسب و کار شما</p>
+     <div class="products-grid">
+      <div class="product-card">
+       <div class="product-icon">
+        🌐
+       </div>
+       <h3 class="product-title">وبسایت شرکتی</h3>
+       <p class="product-description">طراحی وبسایت‌های شرکتی با ظاهری حرفه‌ای و کاربردی</p>
+       <ul class="product-features">
+        <li>✓ طراحی ریسپانسیو</li>
+        <li>✓ سئو پیشرفته</li>
+        <li>✓ سرعت بالا</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
       </div>
-      <h2>ورود به حساب کاربری</h2>
-      <p>خوش برگشتید! وارد حساب خود شوید</p>
+      <div class="product-card">
+       <div class="product-icon">
+        🛒
+       </div>
+       <h3 class="product-title">فروشگاه اینترنتی</h3>
+       <p class="product-description">پلتفرم فروش آنلاین با امکانات کامل و امن</p>
+       <ul class="product-features">
+        <li>✓ درگاه پرداخت</li>
+        <li>✓ مدیریت محصولات</li>
+        <li>✓ پنل کاربری</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
+      </div>
+      <div class="product-card featured">
+       <div class="featured-badge">
+        پیشنهاد ویژه
+       </div>
+       <div class="product-icon">
+        ⚡
+       </div>
+       <h3 class="product-title">وب اپلیکیشن</h3>
+       <p class="product-description">اپلیکیشن‌های وب پیشرفته با تکنولوژی‌های روز دنیا</p>
+       <ul class="product-features">
+        <li>✓ PWA</li>
+        <li>✓ Real-time</li>
+        <li>✓ مقیاس‌پذیر</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
+      </div>
      </div>
-     <div class="auth-modal-body">
-      <div class="auth-success-message" id="login-success">
-       <svg fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-       </svg><span>ورود موفقیت‌آمیز بود! خوش آمدید 🎉</span>
+    </div>
+   </section>
+  </main><!-- Products - Mobile Page -->
+  <main class="page" id="products-mobile-page">
+   <section class="products-section">
+    <div class="products-container">
+     <h1 class="section-title">اپلیکیشن موبایل</h1>
+     <p class="section-subtitle">اپلیکیشن‌های موبایل حرفه‌ای برای اندروید و iOS</p>
+     <div class="products-grid">
+      <div class="product-card">
+       <div class="product-icon">
+        📱
+       </div>
+       <h3 class="product-title">اپلیکیشن اندروید</h3>
+       <p class="product-description">توسعه اپلیکیشن‌های بومی اندروید با کیفیت بالا</p>
+       <ul class="product-features">
+        <li>✓ Native Android</li>
+        <li>✓ Material Design</li>
+        <li>✓ عملکرد بالا</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
       </div>
-      <form id="login-form">
-       <div class="auth-form-group"><label for="login-email" class="auth-form-label">ایمیل یا شماره موبایل</label> <input type="text" id="login-email" class="auth-form-input" placeholder="example@email.com یا 09123456789" required>
-        <div class="auth-form-error" id="login-email-error">
-         لطفاً ایمیل یا شماره موبایل معتبر وارد کنید
+      <div class="product-card">
+       <div class="product-icon">
+        🍎
+       </div>
+       <h3 class="product-title">اپلیکیشن iOS</h3>
+       <p class="product-description">اپلیکیشن‌های حرفه‌ای برای آیفون و آیپد</p>
+       <ul class="product-features">
+        <li>✓ Native iOS</li>
+        <li>✓ SwiftUI</li>
+        <li>✓ App Store Ready</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
+      </div>
+      <div class="product-card">
+       <div class="product-icon">
+        🔄
+       </div>
+       <h3 class="product-title">اپلیکیشن کراس‌پلتفرم</h3>
+       <p class="product-description">یک کد برای همه پلتفرم‌ها با React Native</p>
+       <ul class="product-features">
+        <li>✓ Android &amp; iOS</li>
+        <li>✓ صرفه‌جویی هزینه</li>
+        <li>✓ به‌روزرسانی سریع</li>
+       </ul><button class="product-btn">اطلاعات بیشتر</button>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main><!-- About Page -->
+  <main class="page" id="about-page">
+   <section class="about-section">
+    <div class="about-container">
+     <h1 class="section-title">درباره ما</h1>
+     <div class="about-content">
+      <div class="about-text">
+       <h2 class="about-heading">ما کی هستیم؟</h2>
+       <p class="about-paragraph">ما یک تیم متخصص و با انگیزه هستیم که با استفاده از جدیدترین تکنولوژی‌های دنیا، راهکارهای نوآورانه و هوشمند برای کسب و کارها ارائه می‌دهیم. هدف ما کمک به رشد و توسعه کسب و کارهای ایرانی با استفاده از قدرت هوش مصنوعی است.</p>
+       <h2 class="about-heading">چشم‌انداز ما</h2>
+       <p class="about-paragraph">تبدیل شدن به پیشرو در ارائه خدمات هوش مصنوعی و توسعه نرم‌افزار در منطقه و کمک به دیجیتالی شدن کسب و کارها با بهترین کیفیت و قیمت.</p>
+       <div class="stats-grid">
+        <div class="stat-card">
+         <div class="stat-number">
+          500+
+         </div>
+         <div class="stat-label">
+          پروژه موفق
+         </div>
+        </div>
+        <div class="stat-card">
+         <div class="stat-number">
+          300+
+         </div>
+         <div class="stat-label">
+          مشتری راضی
+         </div>
+        </div>
+        <div class="stat-card">
+         <div class="stat-number">
+          50+
+         </div>
+         <div class="stat-label">
+          تیم متخصص
+         </div>
+        </div>
+        <div class="stat-card">
+         <div class="stat-number">
+          5+
+         </div>
+         <div class="stat-label">
+          سال تجربه
+         </div>
         </div>
        </div>
-       <div class="auth-form-group"><label for="login-password" class="auth-form-label">رمز عبور</label> <input type="password" id="login-password" class="auth-form-input" placeholder="رمز عبور خود را وارد کنید" required>
-        <div class="auth-form-error" id="login-password-error">
-         رمز عبور نمی‌تواند خالی باشد
+      </div>
+     </div>
+    </div>
+   </section>
+  </main><!-- Contact Page -->
+  <main class="page" id="contact-page">
+   <section class="contact-section">
+    <div class="contact-container">
+     <h1 class="section-title">تماس با ما</h1>
+     <p class="section-subtitle">ما آماده پاسخگویی به سوالات شما هستیم</p>
+     <div class="contact-grid">
+      <div class="contact-info">
+       <div class="contact-card">
+        <div class="contact-icon">
+         📞
         </div>
+        <h3>تلفن تماس</h3>
+        <p>021-12345678</p>
        </div>
-       <div class="auth-form-checkbox"><input type="checkbox" id="login-remember"> <label for="login-remember">مرا به خاطر بسپار</label>
-       </div><button type="submit" class="auth-submit-btn" id="login-submit"> <span>ورود به حساب</span> </button>
+       <div class="contact-card">
+        <div class="contact-icon">
+         📧
+        </div>
+        <h3>ایمیل</h3>
+        <p>info@example.com</p>
+       </div>
+       <div class="contact-card">
+        <div class="contact-icon">
+         📍
+        </div>
+        <h3>آدرس</h3>
+        <p>تهران، خیابان ولیعصر، پلاک ۱۲۳</p>
+       </div>
+      </div>
+      <form class="contact-form" onsubmit="handleContactSubmit(event)">
+       <div class="form-group"><label for="contact-name">نام و نام خانوادگی</label> <input type="text" id="contact-name" required>
+       </div>
+       <div class="form-group"><label for="contact-email">ایمیل</label> <input type="email" id="contact-email" required>
+       </div>
+       <div class="form-group"><label for="contact-subject">موضوع</label> <input type="text" id="contact-subject" required>
+       </div>
+       <div class="form-group"><label for="contact-message">پیام شما</label> <textarea id="contact-message" rows="5" required></textarea>
+       </div><button type="submit" class="submit-btn">ارسال پیام</button>
       </form>
-      <div class="auth-divider">
-       یا ورود با
-      </div>
-      <div class="auth-social-buttons"><button class="auth-social-btn">
-        <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /> <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /> <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /> <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-        </svg><span>Google</span> </button> <button class="auth-social-btn">
-        <svg class="w-5 h-5" fill="#1877F2" viewbox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-        </svg><span>Facebook</span> </button>
-      </div>
-     </div>
-     <div class="auth-footer">
-      حساب کاربری ندارید؟ <a href="#" id="switch-to-register">ثبت‌نام کنید</a>
      </div>
     </div>
-   </div><!-- Register Modal -->
-   <div id="register-modal" class="auth-modal">
-    <div class="auth-modal-content">
-     <div class="auth-modal-header"><button class="auth-modal-close" id="register-modal-close">×</button>
-      <div class="auth-modal-icon">
-       🎉
-      </div>
-      <h2>ثبت‌نام در پلتفرم</h2>
-      <p>عضو خانواده بزرگ ما شوید</p>
-     </div>
-     <div class="auth-modal-body">
-      <div class="auth-success-message" id="register-success">
-       <svg fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-       </svg><span>ثبت‌نام موفقیت‌آمیز بود! خوش آمدید 🎉</span>
-      </div>
-      <form id="register-form">
-       <div class="auth-form-group"><label for="register-name" class="auth-form-label">نام و نام خانوادگی</label> <input type="text" id="register-name" class="auth-form-input" placeholder="نام کامل خود را وارد کنید" required>
-        <div class="auth-form-error" id="register-name-error">
-         لطفاً نام خود را وارد کنید
-        </div>
+   </section>
+  </main><!-- Login Page -->
+  <main class="page" id="login-page">
+   <section class="auth-section">
+    <div class="auth-container">
+     <div class="auth-box">
+      <h1 class="auth-title">ورود به حساب کاربری</h1>
+      <p class="auth-subtitle">خوش آمدید! لطفا وارد حساب خود شوید</p>
+      <form class="auth-form" onsubmit="handleLogin(event)">
+       <div class="form-group"><label for="login-email">ایمیل یا نام کاربری</label> <input type="text" id="login-email" required>
        </div>
-       <div class="auth-form-group"><label for="register-email" class="auth-form-label">ایمیل</label> <input type="email" id="register-email" class="auth-form-input" placeholder="example@email.com" required>
-        <div class="auth-form-error" id="register-email-error">
-         لطفاً ایمیل معتبر وارد کنید
-        </div>
+       <div class="form-group"><label for="login-password">رمز عبور</label> <input type="password" id="login-password" required>
        </div>
-       <div class="auth-form-group"><label for="register-phone" class="auth-form-label">شماره موبایل</label> <input type="tel" id="register-phone" class="auth-form-input" placeholder="09123456789" required>
-        <div class="auth-form-error" id="register-phone-error">
-         لطفاً شماره موبایل معتبر وارد کنید
-        </div>
-       </div>
-       <div class="auth-form-group"><label for="register-password" class="auth-form-label">رمز عبور</label> <input type="password" id="register-password" class="auth-form-input" placeholder="حداقل 8 کاراکتر" required>
-        <div class="auth-form-error" id="register-password-error">
-         رمز عبور باید حداقل 8 کاراکتر باشد
-        </div>
-       </div>
-       <div class="auth-form-group"><label for="register-confirm-password" class="auth-form-label">تکرار رمز عبور</label> <input type="password" id="register-confirm-password" class="auth-form-input" placeholder="رمز عبور را دوباره وارد کنید" required>
-        <div class="auth-form-error" id="register-confirm-password-error">
-         رمز عبور مطابقت ندارد
-        </div>
-       </div>
-       <div class="auth-form-checkbox"><input type="checkbox" id="register-terms" required> <label for="register-terms">قوانین و مقررات را می‌پذیرم</label>
-       </div><button type="submit" class="auth-submit-btn" id="register-submit"> <span>ثبت‌نام</span> </button>
+       <div class="form-options"><label class="checkbox-label"> <input type="checkbox"> <span>مرا به خاطر بسپار</span> </label> <a href="#" class="forgot-link">فراموشی رمز عبور؟</a>
+       </div><button type="submit" class="auth-submit-btn">ورود</button>
       </form>
-      <div class="auth-divider">
-       یا ثبت‌نام با
+      <div class="auth-divider"><span>یا</span>
       </div>
-      <div class="auth-social-buttons"><button class="auth-social-btn">
-        <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" /> <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" /> <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" /> <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-        </svg><span>Google</span> </button> <button class="auth-social-btn">
-        <svg class="w-5 h-5" fill="#1877F2" viewbox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-        </svg><span>Facebook</span> </button>
+      <div class="social-login"><button class="social-btn google"> <span>🔍</span> ورود با گوگل </button>
       </div>
-     </div>
-     <div class="auth-footer">
-      قبلاً ثبت‌نام کرده‌اید؟ <a href="#" id="switch-to-login">وارد شوید</a>
+      <p class="auth-switch">حساب کاربری ندارید؟ <a href="#" onclick="navigateTo('register-page')">ثبت نام کنید</a></p>
      </div>
     </div>
+   </section>
+  </main><!-- Register Page -->
+  <main class="page" id="register-page">
+   <section class="auth-section">
+    <div class="auth-container">
+     <div class="auth-box">
+      <h1 class="auth-title">ثبت نام</h1>
+      <p class="auth-subtitle">برای شروع، حساب کاربری خود را بسازید</p>
+      <form class="auth-form" onsubmit="handleRegister(event)">
+       <div class="form-group"><label for="register-name">نام و نام خانوادگی</label> <input type="text" id="register-name" required>
+       </div>
+       <div class="form-group"><label for="register-email">ایمیل</label> <input type="email" id="register-email" required>
+       </div>
+       <div class="form-group"><label for="register-password">رمز عبور</label> <input type="password" id="register-password" required>
+       </div>
+       <div class="form-group"><label for="register-confirm">تکرار رمز عبور</label> <input type="password" id="register-confirm" required>
+       </div>
+       <div class="form-options"><label class="checkbox-label"> <input type="checkbox" required> <span>قوانین و مقررات را می‌پذیرم</span> </label>
+       </div><button type="submit" class="auth-submit-btn">ثبت نام</button>
+      </form>
+      <div class="auth-divider"><span>یا</span>
+      </div>
+      <div class="social-login"><button class="social-btn google"> <span>🔍</span> ثبت نام با گوگل </button>
+      </div>
+      <p class="auth-switch">قبلا ثبت نام کرده‌اید؟ <a href="#" onclick="navigateTo('login-page')">وارد شوید</a></p>
+     </div>
+    </div>
+   </section>
+  </main><!-- AI Chat Widget -->
+  <div class="ai-chat-widget"><button class="ai-chat-button" onclick="toggleChat()" aria-label="باز کردن چت"> 🤖 <span class="ai-chat-pulse"></span> </button>
+   <div class="ai-chat-window" id="chatWindow">
+    <div class="ai-chat-header">
+     <div class="ai-chat-header-info">
+      <div class="ai-chat-avatar">
+       🤖
+      </div>
+      <div class="ai-chat-status">
+       <div class="ai-chat-name" id="chat-title">
+        دستیار هوشمند
+       </div>
+       <div class="ai-chat-online">
+        آنلاین
+       </div>
+      </div>
+     </div><button class="ai-chat-close" onclick="toggleChat()" aria-label="بستن چت">×</button>
+    </div>
+    <div class="ai-chat-messages" id="chatMessages">
+     <div class="ai-message bot">
+      <div class="ai-message-avatar">
+       🤖
+      </div>
+      <div class="ai-message-content">
+       سلام! من دستیار هوشمند شما هستم. چطور می‌تونم کمکتون کنم؟
+      </div>
+     </div>
+    </div>
+    <form class="ai-chat-input-container" onsubmit="sendMessage(event)"><input type="text" class="ai-chat-input" id="chatInput" placeholder="پیام خود را بنویسید..." autocomplete="off"> <button type="submit" class="ai-chat-send" aria-label="ارسال پیام"> ➤ </button>
+    </form>
    </div>
   </div>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99d51c81f71fc8c4',t:'MTc2Mjk0MDg4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <script>
+    // Default Configuration
+    const defaultConfig = {
+      background_color: '#ffffff',
+      primary_color: '#667eea',
+      secondary_color: '#764ba2',
+      text_color: '#2d3748',
+      accent_color: '#4299e1',
+      font_family: 'Segoe UI',
+      font_size: 16,
+      site_title: 'پلتفرم جامع - وبسایت پیشرفته با هوش مصنوعی',
+      hero_title: 'پلتفرم جامع با هوش مصنوعی',
+      hero_subtitle: 'تجربه‌ای نوین از تعامل با هوش مصنوعی پیشرفته. سوالات خود را بپرسید و پاسخ‌های هوشمند دریافت کنید.',
+      chat_title: 'دستیار هوشمند',
+      chat_placeholder: 'پیام خود را بنویسید...'
+    };
+
+    // Navigation functionality
+    function navigateTo(pageId) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      // Show selected page
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+      
+      // Update active nav link
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      // Close mobile menu if open
+      const navMenu = document.getElementById('navMenu');
+      if (navMenu) {
+        navMenu.classList.remove('active');
+      }
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      return false;
+    }
+
+    function toggleMobileMenu() {
+      const navMenu = document.getElementById('navMenu');
+      navMenu.classList.toggle('active');
+    }
+
+    // Form handlers
+    function handleContactSubmit(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('contact-name').value;
+      const email = document.getElementById('contact-email').value;
+      const subject = document.getElementById('contact-subject').value;
+      const message = document.getElementById('contact-message').value;
+      
+      // Show success message
+      const form = event.target;
+      const successMsg = document.createElement('div');
+      successMsg.style.cssText = 'background: #48bb78; color: white; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center;';
+      successMsg.textContent = '✓ پیام شما با موفقیت ارسال شد! به زودی با شما تماس می‌گیریم.';
+      
+      form.appendChild(successMsg);
+      form.reset();
+      
+      setTimeout(() => {
+        successMsg.remove();
+      }, 5000);
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      // Show success message
+      const form = event.target;
+      const successMsg = document.createElement('div');
+      successMsg.style.cssText = 'background: #48bb78; color: white; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center;';
+      successMsg.textContent = '✓ ورود موفقیت‌آمیز بود! در حال انتقال...';
+      
+      form.appendChild(successMsg);
+      
+      setTimeout(() => {
+        navigateTo('home-page');
+        successMsg.remove();
+      }, 2000);
+    }
+
+    function handleRegister(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirm = document.getElementById('register-confirm').value;
+      
+      if (password !== confirm) {
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'background: #f56565; color: white; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center;';
+        errorMsg.textContent = '✗ رمز عبور و تکرار آن یکسان نیستند!';
+        
+        event.target.appendChild(errorMsg);
+        
+        setTimeout(() => {
+          errorMsg.remove();
+        }, 3000);
+        return;
+      }
+      
+      // Show success message
+      const form = event.target;
+      const successMsg = document.createElement('div');
+      successMsg.style.cssText = 'background: #48bb78; color: white; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: center;';
+      successMsg.textContent = '✓ ثبت نام با موفقیت انجام شد! در حال انتقال...';
+      
+      form.appendChild(successMsg);
+      
+      setTimeout(() => {
+        navigateTo('home-page');
+        successMsg.remove();
+      }, 2000);
+    }
+
+    // Chat functionality
+    function toggleChat() {
+      const chatWindow = document.getElementById('chatWindow');
+      const chatButton = document.querySelector('.ai-chat-button');
+      chatWindow.classList.toggle('active');
+      chatButton.classList.toggle('active');
+    }
+
+    function openChat() {
+      const chatWindow = document.getElementById('chatWindow');
+      const chatButton = document.querySelector('.ai-chat-button');
+      if (!chatWindow.classList.contains('active')) {
+        chatWindow.classList.add('active');
+        chatButton.classList.add('active');
+      }
+    }
+
+    // Enhanced AI Response System
+    const aiKnowledgeBase = {
+      greetings: ['سلام', 'درود', 'صبح بخیر', 'عصر بخیر', 'شب بخیر', 'هلو', 'hi', 'hello'],
+      questions: ['چطور', 'چگونه', 'چرا', 'کی', 'کجا', 'چی', 'آیا', 'میشه', 'می‌شه'],
+      thanks: ['ممنون', 'متشکر', 'سپاس', 'مرسی', 'تشکر', 'thanks'],
+      help: ['کمک', 'راهنما', 'help', 'کمکم کن'],
+      capabilities: ['قابلیت', 'توانایی', 'می‌تونی', 'میتونی', 'امکان']
+    };
+
+    function analyzeMessage(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      // Check for greetings
+      if (aiKnowledgeBase.greetings.some(word => lowerMessage.includes(word))) {
+        return 'greeting';
+      }
+      
+      // Check for thanks
+      if (aiKnowledgeBase.thanks.some(word => lowerMessage.includes(word))) {
+        return 'thanks';
+      }
+      
+      // Check for help requests
+      if (aiKnowledgeBase.help.some(word => lowerMessage.includes(word))) {
+        return 'help';
+      }
+      
+      // Check for capabilities inquiry
+      if (aiKnowledgeBase.capabilities.some(word => lowerMessage.includes(word))) {
+        return 'capabilities';
+      }
+      
+      // Check for questions
+      if (aiKnowledgeBase.questions.some(word => lowerMessage.includes(word))) {
+        return 'question';
+      }
+      
+      // Check for specific topics
+      if (lowerMessage.includes('وقت') || lowerMessage.includes('ساعت') || lowerMessage.includes('تاریخ')) {
+        return 'time';
+      }
+      
+      if (lowerMessage.includes('نام') || lowerMessage.includes('اسم')) {
+        return 'name';
+      }
+      
+      return 'general';
+    }
+
+    function generateAIResponse(message) {
+      const messageType = analyzeMessage(message);
+      const now = new Date();
+      const persianDate = now.toLocaleDateString('fa-IR');
+      const persianTime = now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+      
+      const responses = {
+        greeting: [
+          `سلام! خوشحالم که با شما صحبت می‌کنم. چطور می‌تونم کمکتون کنم؟ 😊`,
+          `درود! من دستیار هوشمند شما هستم. در خدمتم! 🤖`,
+          `سلام و احترام! آماده‌ام تا به سوالاتتون پاسخ بدم. 👋`
+        ],
+        thanks: [
+          `خواهش می‌کنم! همیشه در خدمتم. 😊`,
+          `وظیفه‌ست! خوشحالم که تونستم کمک کنم. 🙏`,
+          `هر وقت نیاز داشتید، در خدمتم! 💙`
+        ],
+        help: [
+          `من می‌تونم در موارد زیر بهتون کمک کنم:\n\n✅ پاسخ به سوالات عمومی\n✅ راهنمایی و مشاوره\n✅ اطلاعات زمان و تاریخ\n✅ گفتگوی دوستانه\n\nهر سوالی دارید بپرسید!`,
+          `من یک دستیار هوشمند هستم که می‌تونم:\n\n🔹 به سوالاتتون پاسخ بدم\n🔹 اطلاعات مفید ارائه کنم\n🔹 راهنماییتون کنم\n\nچه کمکی از دستم بر میاد؟`
+        ],
+        capabilities: [
+          `قابلیت‌های من شامل:\n\n🤖 پردازش زبان طبیعی فارسی\n💬 گفتگوی هوشمند\n📊 تحلیل سوالات\n⚡ پاسخ‌دهی سریع\n🎯 درک متن و زمینه\n\nبرای تست، یه سوال ازم بپرسید!`,
+          `من یک هوش مصنوعی پیشرفته هستم که می‌تونم:\n\n✨ زبان فارسی رو به خوبی درک کنم\n✨ به انواع سوالات پاسخ بدم\n✨ کمک و راهنمایی ارائه کنم\n✨ گفتگوی طبیعی داشته باشم\n\nچیزی رو می‌خواید بدونید؟`
+        ],
+        time: [
+          `⏰ زمان فعلی: ${persianTime}\n📅 تاریخ امروز: ${persianDate}\n\nچیز دیگه‌ای می‌خواید بدونید؟`,
+          `الان ساعت ${persianTime} و تاریخ ${persianDate} است. 🕐`
+        ],
+        name: [
+          `من دستیار هوشمند شما هستم! می‌تونید منو "دستیار" صدا کنید. 🤖`,
+          `اسم من "دستیار هوشمند" است و اینجام تا بهتون کمک کنم! 😊`
+        ],
+        question: [
+          `سوال جالبی پرسیدید! ${message.includes('چرا') ? 'دلیلش اینه که' : 'جوابش اینه که'} این موضوع بستگی به شرایط مختلف داره. می‌تونید سوالتون رو دقیق‌تر بپرسید تا بهتر کمکتون کنم. 🤔`,
+          `خوب، در مورد سوالتون باید بگم که این یک موضوع جالب و قابل بحثه. برای پاسخ دقیق‌تر، لطفاً جزئیات بیشتری بهم بدید. 💡`,
+          `این سوال خیلی خوبیه! بذارید بهتون توضیح بدم: معمولاً این موضوع به عوامل مختلفی بستگی داره. اگه سوال خاص‌تری دارید، خوشحال میشم پاسخ بدم. 📚`
+        ],
+        general: [
+          `متوجه شدم. ${message.length > 20 ? 'نکته جالبی مطرح کردید.' : 'جالبه!'} من اینجام تا در هر موضوعی که نیاز دارید کمکتون کنم. سوال خاصی دارید؟ 🎯`,
+          `${message.length > 30 ? 'پیام شما رو دریافت کردم.' : 'فهمیدم.'} به عنوان یک دستیار هوشمند، سعی می‌کنم بهترین پاسخ رو بهتون بدم. چیز دیگه‌ای می‌خواید بدونید؟ 💬`,
+          `درباره "${message.substring(0, 30)}${message.length > 30 ? '...' : ''}" می‌تونم بگم که این موضوع قابل توجهه. اگه سوال مشخص‌تری دارید، خوشحال میشم کمک کنم! 🌟`,
+          `جالب بود! من به عنوان یک هوش مصنوعی، همیشه در حال یادگیری هستم. ${message.includes('؟') ? 'سوالتون رو دریافت کردم' : 'نظرتون رو شنیدم'} و آماده‌ام بیشتر کمک کنم. 🚀`
+        ]
+      };
+      
+      const responseArray = responses[messageType] || responses.general;
+      return responseArray[Math.floor(Math.random() * responseArray.length)];
+    }
+
+    function sendMessage(event) {
+      event.preventDefault();
+      
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      // Add user message
+      addMessage(message, 'user');
+      input.value = '';
+      
+      // Show typing indicator
+      showTyping();
+      
+      // Generate intelligent AI response
+      setTimeout(() => {
+        hideTyping();
+        const aiResponse = generateAIResponse(message);
+        addMessage(aiResponse, 'bot');
+      }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds for more natural feel
+    }
+
+    function addMessage(text, sender) {
+      const messagesContainer = document.getElementById('chatMessages');
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `ai-message ${sender}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'ai-message-avatar';
+      avatar.textContent = sender === 'bot' ? '🤖' : '👤';
+      
+      const content = document.createElement('div');
+      content.className = 'ai-message-content';
+      
+      // Support for line breaks in messages
+      const lines = text.split('\n');
+      lines.forEach((line, index) => {
+        if (index > 0) {
+          content.appendChild(document.createElement('br'));
+        }
+        content.appendChild(document.createTextNode(line));
+      });
+      
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(content);
+      messagesContainer.appendChild(messageDiv);
+      
+      // Smooth scroll to bottom
+      setTimeout(() => {
+        messagesContainer.scrollTo({
+          top: messagesContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 100);
+    }
+
+    let typingIndicator = null;
+
+    function showTyping() {
+      const messagesContainer = document.getElementById('chatMessages');
+      
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'ai-message bot';
+      typingDiv.id = 'typing-indicator';
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'ai-message-avatar';
+      avatar.textContent = '🤖';
+      
+      const typingContent = document.createElement('div');
+      typingContent.className = 'ai-chat-typing';
+      typingContent.innerHTML = '<div class="ai-typing-dot"></div><div class="ai-typing-dot"></div><div class="ai-typing-dot"></div>';
+      
+      typingDiv.appendChild(avatar);
+      typingDiv.appendChild(typingContent);
+      messagesContainer.appendChild(typingDiv);
+      
+      typingIndicator = typingDiv;
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function hideTyping() {
+      if (typingIndicator) {
+        typingIndicator.remove();
+        typingIndicator = null;
+      }
+    }
+
+    // 3D Parallax Effect for Product Cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const productCards = document.querySelectorAll('.product-card');
+      
+      productCards.forEach(card => {
+        card.addEventListener('mousemove', function(e) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          const rotateX = (y - centerY) / 10;
+          const rotateY = (centerX - x) / 10;
+          
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-20px) scale(1.02)`;
+        });
+        
+        card.addEventListener('mouseleave', function() {
+          card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+        });
+      });
+
+      // Add floating animation to product icons
+      const productIcons = document.querySelectorAll('.product-icon');
+      productIcons.forEach((icon, index) => {
+        icon.style.animation = `float 3s ease-in-out ${index * 0.2}s infinite`;
+      });
+    });
+
+    // Floating animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Element SDK Integration
+    async function onConfigChange(config) {
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseSize = config.font_size || defaultConfig.font_size;
+      const baseFontStack = 'Tahoma, Geneva, Verdana, sans-serif';
+
+      // Apply background color
+      document.body.style.background = config.background_color || defaultConfig.background_color;
+
+      // Apply font family and sizes
+      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      
+      // Hero title
+      const heroTitle = document.getElementById('hero-title');
+      if (heroTitle) {
+        heroTitle.style.fontSize = `${baseSize * 2.2}px`;
+        heroTitle.textContent = config.hero_title || defaultConfig.hero_title;
+      }
+
+      // Hero subtitle
+      const heroSubtitle = document.getElementById('hero-subtitle');
+      if (heroSubtitle) {
+        heroSubtitle.style.fontSize = `${baseSize * 1.4}px`;
+        heroSubtitle.style.color = config.text_color || defaultConfig.text_color;
+        heroSubtitle.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      }
+
+      // Chat title
+      const chatTitle = document.getElementById('chat-title');
+      if (chatTitle) {
+        chatTitle.textContent = config.chat_title || defaultConfig.chat_title;
+      }
+
+      // Chat input placeholder
+      const chatInput = document.getElementById('chatInput');
+      if (chatInput) {
+        chatInput.placeholder = config.chat_placeholder || defaultConfig.chat_placeholder;
+      }
+
+      // Apply primary color to gradients
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+      
+      // Update button gradients
+      const chatButton = document.querySelector('.ai-chat-button');
+      if (chatButton) {
+        chatButton.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      }
+
+      const chatHeader = document.querySelector('.ai-chat-header');
+      if (chatHeader) {
+        chatHeader.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      }
+
+      const heroCta = document.querySelector('.hero-cta');
+      if (heroCta) {
+        heroCta.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      }
+
+      const sendButton = document.querySelector('.ai-chat-send');
+      if (sendButton) {
+        sendButton.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      }
+
+      // Update title
+      document.title = config.site_title || defaultConfig.site_title;
+    }
+
+    // Initialize Element SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => {
+                config.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                config.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (value) => {
+                config.accent_color = value;
+                window.elementSdk.setConfig({ accent_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => config.font_family || defaultConfig.font_family,
+            set: (value) => {
+              config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => config.font_size || defaultConfig.font_size,
+            set: (value) => {
+              config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ['site_title', config.site_title || defaultConfig.site_title],
+          ['hero_title', config.hero_title || defaultConfig.hero_title],
+          ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+          ['chat_title', config.chat_title || defaultConfig.chat_title],
+          ['chat_placeholder', config.chat_placeholder || defaultConfig.chat_placeholder]
+        ])
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99d59b1352e11656',t:'MTc2Mjk0NjA2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
