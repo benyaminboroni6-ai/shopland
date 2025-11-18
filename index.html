@@ -1,1 +1,5132 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopland - فروشگاه آنلاین پیشرفته</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f23;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        /* پس‌زمینه متحرک پیشرفته */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float-particle 15s infinite ease-in-out;
+        }
+
+        @keyframes float-particle {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translate(100px, -100px) scale(1.2);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50px, -200px) scale(0.8);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(-150px, -100px) scale(1.1);
+                opacity: 0.5;
+            }
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 300px;
+            background: linear-gradient(180deg, transparent, rgba(15, 52, 96, 0.3));
+            animation: wave-animation 20s linear infinite;
+        }
+
+        @keyframes wave-animation {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* هدر و منوی پیشرفته */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 3rem;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .header.scrolled {
+            padding: 0.8rem 3rem;
+            background: rgba(15, 15, 35, 0.98);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #0066ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff, #0099ff);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #00d4ff;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            padding: 10px;
+            position: relative;
+            z-index: 1001;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .hamburger-line {
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 
+                0 2px 10px rgba(0, 212, 255, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .hamburger-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            border-radius: 10px;
+            animation: shine-line 2s infinite;
+        }
+
+        @keyframes shine-line {
+            0%, 100% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(100%);
+            }
+        }
+
+        .hamburger-menu:hover .hamburger-line {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            box-shadow: 
+                0 4px 20px rgba(0, 255, 136, 0.6),
+                inset 0 1px 2px rgba(255, 255, 255, 0.5);
+            transform: translateZ(10px);
+        }
+
+        .hamburger-menu:hover .hamburger-line:nth-child(1) {
+            transform: translateZ(15px) translateX(5px);
+        }
+
+        .hamburger-menu:hover .hamburger-line:nth-child(2) {
+            transform: translateZ(20px);
+        }
+
+        .hamburger-menu:hover .hamburger-line:nth-child(3) {
+            transform: translateZ(15px) translateX(-5px);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: translateY(9px) rotate(45deg) translateZ(10px);
+            background: linear-gradient(135deg, #ff0080, #ff0040);
+            box-shadow: 0 4px 20px rgba(255, 0, 128, 0.6);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+            transform: translateX(50px) rotateY(90deg);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg) translateZ(10px);
+            background: linear-gradient(135deg, #ff0080, #ff0040);
+            box-shadow: 0 4px 20px rgba(255, 0, 128, 0.6);
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 320px;
+            height: 100%;
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(30px);
+            z-index: 1000;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 100px 2rem 2rem;
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.8);
+            border-left: 2px solid rgba(0, 212, 255, 0.3);
+            overflow-y: auto;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .mobile-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.1), transparent);
+            pointer-events: none;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .mobile-nav-menu li {
+            opacity: 0;
+            transform: translateX(50px) rotateY(-30deg);
+            animation: slideInMenu 0.5s ease forwards;
+        }
+
+        .mobile-nav-menu li:nth-child(1) { animation-delay: 0.1s; }
+        .mobile-nav-menu li:nth-child(2) { animation-delay: 0.15s; }
+        .mobile-nav-menu li:nth-child(3) { animation-delay: 0.2s; }
+        .mobile-nav-menu li:nth-child(4) { animation-delay: 0.25s; }
+        .mobile-nav-menu li:nth-child(5) { animation-delay: 0.3s; }
+        .mobile-nav-menu li:nth-child(6) { animation-delay: 0.35s; }
+        .mobile-nav-menu li:nth-child(7) { animation-delay: 0.4s; }
+
+        @keyframes slideInMenu {
+            to {
+                opacity: 1;
+                transform: translateX(0) rotateY(0);
+            }
+        }
+
+        .mobile-nav-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 15px;
+            margin-bottom: 0.5rem;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .mobile-nav-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .mobile-nav-menu a:hover::before {
+            left: 100%;
+        }
+
+        .mobile-nav-menu a::after {
+            content: '→';
+            position: absolute;
+            right: 1.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            color: #00d4ff;
+        }
+
+        .mobile-nav-menu a:hover {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 255, 0.2));
+            border-color: rgba(0, 212, 255, 0.5);
+            color: #00d4ff;
+            transform: translateX(10px) translateZ(20px) rotateY(5deg);
+            box-shadow: 
+                -5px 5px 20px rgba(0, 212, 255, 0.3),
+                inset 0 0 20px rgba(0, 212, 255, 0.1);
+        }
+
+        .mobile-nav-menu a:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .mobile-nav-menu a:active {
+            transform: translateX(5px) translateZ(10px) scale(0.98);
+        }
+
+        .menu-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 255, 0.2));
+            border-radius: 12px;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .mobile-nav-menu a:hover .menu-icon {
+            transform: scale(1.2) rotate(360deg);
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            box-shadow: 0 6px 25px rgba(0, 212, 255, 0.6);
+        }
+
+        .mobile-menu-footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            animation: fadeInFooter 0.5s ease 0.5s forwards;
+        }
+
+        @keyframes fadeInFooter {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .mobile-menu-social {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .mobile-social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #00d4ff;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            transform-style: preserve-3d;
+        }
+
+        .mobile-social-link:hover {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+            transform: translateY(-10px) rotateY(360deg) scale(1.2);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.6);
+            border-color: transparent;
+        }
+
+        .mobile-menu-info {
+            text-align: center;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .mobile-menu-info strong {
+            color: #00d4ff;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hamburger-menu {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                width: 280px;
+            }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 0.7rem 1.5rem 0.7rem 3rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #e0e0e0;
+            font-size: 0.95rem;
+            width: 250px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input:focus {
+            width: 350px;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            font-size: 1.2rem;
+            color: #00d4ff;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            display: none;
+            z-index: 1000;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-results::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .search-results::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .search-results::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-radius: 10px;
+        }
+
+        .search-result-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .search-result-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-name {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .search-result-category {
+            color: #00d4ff;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .search-result-price {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .search-no-results {
+            padding: 2rem;
+            text-align: center;
+            color: #b0b0b0;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.8rem;
+            color: #00d4ff;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 3px 8px rgba(0, 212, 255, 0.4));
+            transform-style: preserve-3d;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.2) rotate(15deg) translateZ(10px);
+            filter: drop-shadow(0 8px 20px rgba(0, 212, 255, 0.8));
+            animation: cart-bounce 0.6s ease;
+        }
+
+        @keyframes cart-bounce {
+            0%, 100% {
+                transform: scale(1.2) rotate(15deg) translateY(0);
+            }
+            50% {
+                transform: scale(1.25) rotate(15deg) translateY(-5px);
+            }
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ff0080, #ff0040);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* پنل سبد خرید */
+        .cart-panel {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 450px;
+            height: 100%;
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(20px);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .cart-panel.active {
+            left: 0;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+
+
+        .cart-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .cart-header h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .cart-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .cart-items {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .cart-items::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cart-items::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-radius: 10px;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #b0b0b0;
+        }
+
+        .cart-empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .cart-empty-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateX(-5px);
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .cart-item-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .cart-item-price {
+            font-size: 1.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            color: #00d4ff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .quantity-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        .quantity-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #e0e0e0;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .cart-item-remove {
+            background: rgba(255, 0, 80, 0.2);
+            border: none;
+            color: #ff0050;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .cart-item-remove:hover {
+            background: rgba(255, 0, 80, 0.4);
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .cart-footer {
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .cart-total-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e0e0e0;
+        }
+
+        .cart-total-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cart-checkout-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cart-checkout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.5);
+        }
+
+        .cart-checkout-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cart-checkout-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* افکت‌های اضافی */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .product-badge {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+        }
+
+        /* افکت موج برای دکمه‌ها */
+        .btn-primary,
+        .add-to-cart,
+        .newsletter-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after,
+        .add-to-cart::after,
+        .newsletter-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:active::after,
+        .add-to-cart:active::after,
+        .newsletter-btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+
+
+        /* بخش Hero پیشرفته */
+        .hero {
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 50%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: title-glow 3s ease-in-out infinite;
+            line-height: 1.2;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+        }
+
+        @keyframes title-glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.4));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(0, 212, 255, 0.8));
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            margin-bottom: 3rem;
+            color: #b0b0b0;
+            line-height: 1.8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fade-in-up 1s ease 0.3s backwards;
+        }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fade-in-up 1s ease 0.6s backwards;
+        }
+
+        .btn-primary {
+            padding: 1.2rem 3.5rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 10px 40px rgba(0, 212, 255, 0.4),
+                0 5px 15px rgba(0, 153, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-8px) scale(1.05) rotateX(5deg);
+            box-shadow: 
+                0 25px 70px rgba(0, 212, 255, 0.6),
+                0 15px 35px rgba(0, 153, 255, 0.4),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .btn-secondary {
+            padding: 1.2rem 3.5rem;
+            background: transparent;
+            color: #00d4ff;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            border: 3px solid #00d4ff;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #00d4ff;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.4);
+        }
+
+        /* بخش محصولات پیشرفته */
+        .products-section {
+            padding: 6rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            margin-bottom: 4rem;
+        }
+
+        .products-filter {
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.9rem 2.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            color: #e0e0e0;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            border-color: #00d4ff;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .products-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+            min-height: 600px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            color: #e0e0e0;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            min-width: 50px;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            border-color: #00d4ff;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .pagination-btn.active {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            border-color: #00d4ff;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            color: #b0b0b0;
+            font-size: 1rem;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 153, 255, 0.15));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+            border-radius: 25px;
+        }
+
+        .product-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .product-card:hover::before {
+            opacity: 1;
+        }
+
+        .product-card:hover::after {
+            opacity: 1;
+        }
+
+        .product-card:hover {
+            transform: translateY(-20px) rotateX(5deg) rotateY(-5deg) scale(1.03);
+            box-shadow: 
+                0 30px 70px rgba(0, 212, 255, 0.4),
+                0 15px 35px rgba(0, 153, 255, 0.3),
+                inset 0 0 30px rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.6);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #ff0080, #ff0040);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: 0 5px 20px rgba(255, 0, 128, 0.4);
+        }
+
+        .product-info {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .product-category {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #ffffff;
+        }
+
+        .product-description {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .add-to-cart {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        /* چت‌باکس هوش مصنوعی پیشرفته */
+        .ai-chatbox {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 2000;
+        }
+
+        .chat-toggle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 
+                0 10px 40px rgba(0, 212, 255, 0.5),
+                0 5px 20px rgba(0, 153, 255, 0.4),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.2),
+                inset 0 3px 10px rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .chat-toggle::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+            animation: pulse-ring 2s infinite;
+        }
+
+        .chat-toggle::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine-chat 3s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shine-chat {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.2) rotate(15deg) translateZ(10px);
+            box-shadow: 
+                0 20px 60px rgba(0, 212, 255, 0.7),
+                0 10px 30px rgba(0, 153, 255, 0.5),
+                inset 0 -5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-toggle:active {
+            transform: scale(1.1) translateZ(5px);
+        }
+
+        .chat-window {
+            position: absolute;
+            bottom: 90px;
+            left: 0;
+            width: 420px;
+            height: 600px;
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            animation: slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chat-window.active {
+            display: flex;
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-status {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .chat-online {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: blink-dot 2s infinite;
+        }
+
+        @keyframes blink-dot {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .chat-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .chat-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chat-disable {
+            background: rgba(255, 0, 80, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem;
+        }
+
+        .chat-disable:hover {
+            background: rgba(255, 0, 80, 0.4);
+            transform: scale(1.1);
+        }
+
+        .ai-chatbox.disabled {
+            display: none;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-radius: 10px;
+        }
+
+        .chat-message {
+            padding: 1rem 1.3rem;
+            border-radius: 20px;
+            max-width: 85%;
+            animation: message-slide 0.3s ease;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        @keyframes message-slide {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-message.ai {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 255, 0.2));
+            align-self: flex-start;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-message.user {
+            background: linear-gradient(135deg, rgba(118, 75, 162, 0.3), rgba(102, 126, 234, 0.3));
+            align-self: flex-end;
+            border: 1px solid rgba(118, 75, 162, 0.3);
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.3rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 255, 0.2));
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            max-width: 85%;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00d4ff;
+            animation: typing-bounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing-bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chat-input-area {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .chat-send {
+            padding: 1rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .chat-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quick-replies {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-reply {
+            padding: 0.6rem 1.2rem;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            color: #00d4ff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-reply:hover {
+            background: rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .message-action-btn:hover {
+            background: rgba(0, 212, 255, 0.3) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .feedback-btn:hover {
+            transform: scale(1.3);
+            filter: drop-shadow(0 3px 8px rgba(0, 212, 255, 0.5));
+        }
+
+        .message-content {
+            line-height: 1.6;
+        }
+
+        /* انیمیشن برای دکمه‌های پیام */
+        @keyframes button-appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-buttons button {
+            animation: button-appear 0.3s ease forwards;
+        }
+
+        .message-buttons button:nth-child(1) { animation-delay: 0.1s; }
+        .message-buttons button:nth-child(2) { animation-delay: 0.2s; }
+        .message-buttons button:nth-child(3) { animation-delay: 0.3s; }
+        .message-buttons button:nth-child(4) { animation-delay: 0.4s; }
+
+        /* افکت تایپینگ پیشرفته */
+        .typing-indicator {
+            animation: typing-pulse 1.5s infinite;
+        }
+
+        @keyframes typing-pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* نشانگر آنلاین پیشرفته */
+        .status-dot {
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        /* افکت‌های اضافی برای چت‌باکس */
+        .chat-window {
+            animation: chat-slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes chat-slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* پیام‌های چت با انیمیشن */
+        .chat-message {
+            animation: message-fade-in 0.4s ease;
+        }
+
+        @keyframes message-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* بخش ویژگی‌ها */
+        .features-section {
+            padding: 6rem 2rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 3rem 2rem;
+            border-radius: 25px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 255, 0.1));
+            border-radius: 25px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-20px) rotateX(10deg) scale(1.05);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 30px 70px rgba(0, 212, 255, 0.3),
+                0 15px 35px rgba(0, 153, 255, 0.2),
+                inset 0 0 30px rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.6);
+        }
+
+        .feature-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 15px 40px rgba(0, 212, 255, 0.4),
+                0 8px 20px rgba(0, 153, 255, 0.3),
+                inset 0 -5px 15px rgba(0, 0, 0, 0.2),
+                inset 0 5px 15px rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .feature-icon::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 153, 255, 0.3));
+            border-radius: 30px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .feature-card:hover .feature-icon::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotateY(360deg) scale(1.15) translateZ(20px);
+            box-shadow: 
+                0 25px 60px rgba(0, 212, 255, 0.6),
+                0 15px 30px rgba(0, 153, 255, 0.4),
+                inset 0 -8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        .feature-description {
+            color: #b0b0b0;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* فوتر پیشرفته */
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #00d4ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: #00d4ff;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #00d4ff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .social-link:hover {
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            color: white;
+            transform: translateY(-5px) rotate(10deg);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #b0b0b0;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.9rem 1.5rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        /* بخش دسته‌بندی‌ها */
+        .categories-section {
+            padding: 6rem 2rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .categories-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 3rem 2rem;
+            border-radius: 25px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 255, 0.1));
+            border-radius: 25px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-card:hover {
+            transform: translateY(-15px) rotateX(8deg) scale(1.05);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 25px 60px rgba(0, 212, 255, 0.4),
+                0 15px 30px rgba(0, 153, 255, 0.3),
+                inset 0 0 30px rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.6);
+        }
+
+        .category-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 5px 15px rgba(0, 212, 255, 0.3));
+            display: inline-block;
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.3) rotate(360deg) translateZ(20px);
+            filter: drop-shadow(0 10px 25px rgba(0, 212, 255, 0.6));
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #ffffff;
+        }
+
+        .category-count {
+            color: #00d4ff;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .category-btn {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .category-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+        }
+
+        /* بخش درباره ما */
+        .about-section {
+            padding: 6rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .about-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-content {
+            text-align: right;
+        }
+
+        .about-text {
+            color: #b0b0b0;
+            line-height: 2;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 1rem;
+        }
+
+        .about-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-icon-large {
+            font-size: 15rem;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* بخش بلاگ */
+        .blog-section {
+            padding: 6rem 2rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .blog-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .blog-image {
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            transition: all 0.4s ease;
+        }
+
+        .blog-card:hover .blog-image {
+            transform: scale(1.1);
+        }
+
+        .blog-content {
+            padding: 2rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .blog-date {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .blog-category {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .blog-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .blog-excerpt {
+            color: #b0b0b0;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .blog-read-more {
+            background: transparent;
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .blog-read-more:hover {
+            background: #00d4ff;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* بخش تماس با ما */
+        .contact-section {
+            padding: 6rem 2rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .contact-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateX(-5px);
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            min-width: 60px;
+        }
+
+        .contact-details h3 {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .contact-details p {
+            color: #b0b0b0;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #e0e0e0;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.5);
+        }
+
+        /* لودینگ */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 35, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(0, 212, 255, 0.2);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* واکنش‌گرایی */
+        @media (max-width: 1200px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .header {
+                padding: 1rem 2rem;
+            }
+
+            .hero {
+                padding: 7rem 2rem 3rem;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.4rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 2rem;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .about-icon-large {
+                font-size: 10rem;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .search-box {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem 1.5rem;
+            }
+
+            .header-actions {
+                gap: 1rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .cart-panel {
+                width: 100%;
+                left: -100%;
+            }
+
+            .cart-panel.active {
+                left: 0;
+            }
+
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+                min-height: auto;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+                line-height: 1.3;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                max-width: 100%;
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .section-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 3rem;
+            }
+
+            .products-section,
+            .categories-section,
+            .features-section,
+            .about-section,
+            .blog-section,
+            .contact-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .products-filter {
+                gap: 0.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .filter-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .product-card {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .feature-card {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+
+            .about-icon-large {
+                font-size: 8rem;
+            }
+
+            .about-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .blog-card {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                padding: 2rem;
+            }
+
+            .chat-window {
+                width: 100%;
+                height: 100%;
+                left: 0;
+                bottom: 0;
+                border-radius: 0;
+            }
+
+            .chat-window.active {
+                transform: none;
+            }
+
+            .ai-chatbox {
+                bottom: 1rem;
+                left: 1rem;
+            }
+
+            .chat-toggle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .newsletter-input,
+            .newsletter-btn {
+                width: 100%;
+            }
+
+            .pagination {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .pagination-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+                min-width: 40px;
+            }
+
+            .pagination-info {
+                width: 100%;
+                text-align: center;
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .cart-icon {
+                font-size: 1.5rem;
+            }
+
+            .cart-badge {
+                width: 18px;
+                height: 18px;
+                font-size: 0.7rem;
+                top: -6px;
+                right: -6px;
+            }
+
+            .hero {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.95rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
+            }
+
+            .products-section,
+            .categories-section,
+            .features-section,
+            .about-section,
+            .blog-section,
+            .contact-section {
+                padding: 3rem 1rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.85rem;
+            }
+
+            .product-image {
+                height: 220px;
+                font-size: 4rem;
+            }
+
+            .product-title {
+                font-size: 1.3rem;
+            }
+
+            .product-price {
+                font-size: 1.5rem;
+            }
+
+            .add-to-cart {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .category-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .category-icon {
+                font-size: 3rem;
+            }
+
+            .category-title {
+                font-size: 1.3rem;
+            }
+
+            .feature-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .feature-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+
+            .feature-title {
+                font-size: 1.5rem;
+            }
+
+            .feature-description {
+                font-size: 0.95rem;
+            }
+
+            .about-icon-large {
+                font-size: 6rem;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .blog-image {
+                height: 180px;
+                font-size: 4rem;
+            }
+
+            .blog-title {
+                font-size: 1.2rem;
+            }
+
+            .contact-item {
+                padding: 1.5rem;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .contact-icon {
+                font-size: 2rem;
+            }
+
+            .contact-form {
+                padding: 1.5rem;
+            }
+
+            .form-input,
+            .form-textarea {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.95rem;
+            }
+
+            .form-submit {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .chat-toggle {
+                width: 55px;
+                height: 55px;
+                font-size: 1.6rem;
+            }
+
+            .chat-header {
+                padding: 1.2rem;
+            }
+
+            .chat-name {
+                font-size: 1rem;
+            }
+
+            .chat-messages {
+                padding: 1rem;
+            }
+
+            .chat-message {
+                padding: 0.9rem 1.1rem;
+                font-size: 0.95rem;
+            }
+
+            .chat-input {
+                padding: 0.9rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .quick-replies {
+                gap: 0.5rem;
+            }
+
+            .quick-reply {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .footer {
+                padding: 3rem 1rem 1.5rem;
+            }
+
+            .footer-section h3 {
+                font-size: 1.3rem;
+            }
+
+            .social-links {
+                gap: 1rem;
+            }
+
+            .social-link {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+
+            .mobile-menu {
+                width: 100%;
+                padding: 80px 1.5rem 1.5rem;
+            }
+
+            .mobile-nav-menu a {
+                padding: 1rem 1.2rem;
+                font-size: 1rem;
+            }
+
+            .menu-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.3rem;
+            }
+
+            .cart-items {
+                padding: 1.5rem;
+            }
+
+            .cart-item {
+                padding: 1.2rem;
+                gap: 1rem;
+            }
+
+            .cart-item-image {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+
+            .cart-item-name {
+                font-size: 1rem;
+            }
+
+            .cart-item-price {
+                font-size: 1.1rem;
+            }
+
+            .cart-footer {
+                padding: 1.5rem;
+            }
+
+            .cart-total {
+                padding: 1.2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .cart-total-label {
+                font-size: 1.1rem;
+            }
+
+            .cart-total-value {
+                font-size: 1.8rem;
+            }
+
+            .cart-checkout-btn {
+                padding: 1rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .product-image {
+                height: 200px;
+                font-size: 3.5rem;
+            }
+
+            .category-icon {
+                font-size: 2.5rem;
+            }
+
+            .feature-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+
+            .chat-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4rem;
+            }
+        }
+
+        /* تبلت افقی */
+        @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 6rem 2rem 3rem;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* موبایل افقی */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 5rem 1.5rem 2rem;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .chat-window {
+                height: 90%;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- لودینگ -->
+  <div class="loading-overlay" id="loading">
+   <div class="loader"></div>
+  </div><!-- پس‌زمینه متحرک -->
+  <div class="animated-background">
+   <div class="wave"></div>
+  </div><!-- هدر -->
+  <header class="header" id="header">
+   <div class="header-container">
+    <div class="logo" id="site-title">
+     SHOPLAND
+    </div>
+    <div class="hamburger-menu" id="hamburger-menu"><span class="hamburger-line"></span> <span class="hamburger-line"></span> <span class="hamburger-line"></span>
+    </div>
+    <nav>
+     <ul class="nav-menu" id="nav-menu">
+      <li><a href="#home" class="nav-link">خانه</a></li>
+      <li><a href="#products" class="nav-link">محصولات</a></li>
+      <li><a href="#categories" class="nav-link">دسته‌بندی‌ها</a></li>
+      <li><a href="#features" class="nav-link">ویژگی‌ها</a></li>
+      <li><a href="#about" class="nav-link">درباره ما</a></li>
+      <li><a href="#blog" class="nav-link">بلاگ</a></li>
+      <li><a href="#contact" class="nav-link">تماس</a></li>
+     </ul>
+    </nav>
+    <div class="header-actions">
+     <div class="search-box"><span class="search-icon">🔍</span> <input type="text" class="search-input" id="search-input" placeholder="جستجو محصولات...">
+     </div>
+     <div class="search-results" id="search-results"></div>
+     <div class="cart-icon" id="cart-icon">
+      🛒 <span class="cart-badge" id="cart-badge">0</span>
+     </div>
+    </div>
+   </div>
+  </header><!-- منوی موبایل -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+  <div class="mobile-menu" id="mobile-menu">
+   <ul class="mobile-nav-menu">
+    <li><a href="#home" class="mobile-nav-link"> <span class="menu-icon">🏠</span> <span>خانه</span> </a></li>
+    <li><a href="#products" class="mobile-nav-link"> <span class="menu-icon">🛍️</span> <span>محصولات</span> </a></li>
+    <li><a href="#categories" class="mobile-nav-link"> <span class="menu-icon">📂</span> <span>دسته‌بندی‌ها</span> </a></li>
+    <li><a href="#features" class="mobile-nav-link"> <span class="menu-icon">⭐</span> <span>ویژگی‌ها</span> </a></li>
+    <li><a href="#about" class="mobile-nav-link"> <span class="menu-icon">ℹ️</span> <span>درباره ما</span> </a></li>
+    <li><a href="#blog" class="mobile-nav-link"> <span class="menu-icon">📝</span> <span>بلاگ</span> </a></li>
+    <li><a href="#contact" class="mobile-nav-link"> <span class="menu-icon">📞</span> <span>تماس با ما</span> </a></li>
+   </ul>
+   <div class="mobile-menu-footer">
+    <div class="mobile-menu-social"><a href="#" class="mobile-social-link" target="_blank" rel="noopener noreferrer">📘</a> <a href="#" class="mobile-social-link" target="_blank" rel="noopener noreferrer">📷</a> <a href="#" class="mobile-social-link" target="_blank" rel="noopener noreferrer">🐦</a> <a href="#" class="mobile-social-link" target="_blank" rel="noopener noreferrer">💼</a>
+    </div>
+    <div class="mobile-menu-info"><strong>Shopland</strong>
+     <p>تجربه خرید آنلاین در سطح جهانی</p>
+     <p style="margin-top: 1rem; font-size: 0.85rem;">📞 021-12345678</p>
+    </div>
+   </div>
+  </div><!-- پنل سبد خرید -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <div class="cart-panel" id="cart-panel">
+   <div class="cart-header">
+    <h2>🛒 سبد خرید</h2><button class="cart-close-btn" id="cart-close-btn">×</button>
+   </div>
+   <div class="cart-items" id="cart-items-container"><!-- محصولات سبد خرید به صورت داینامیک اضافه می‌شوند -->
+   </div>
+   <div class="cart-footer">
+    <div class="cart-total"><span class="cart-total-label">جمع کل:</span> <span class="cart-total-value" id="cart-total-value">0 تومان</span>
+    </div><button class="cart-checkout-btn" id="cart-checkout-btn">تکمیل خرید 🚀</button>
+   </div>
+  </div><!-- بخش Hero -->
+  <section class="hero" id="home">
+   <div class="hero-content">
+    <h1 class="hero-title" id="hero-title">تجربه خرید آنلاین در سطح جهانی</h1>
+    <p class="hero-subtitle" id="hero-subtitle">با هوش مصنوعی پیشرفته، بهترین محصولات را با قیمت‌های باورنکردنی کشف کنید</p>
+    <div class="hero-buttons"><button class="btn-primary" id="cta-button">شروع خرید</button> <button class="btn-secondary">مشاهده کاتالوگ</button>
+    </div>
+   </div>
+  </section><!-- بخش دسته‌بندی‌ها -->
+  <section class="categories-section" id="categories">
+   <h2 class="section-title">دسته‌بندی محصولات</h2>
+   <p class="section-subtitle">محصولات را بر اساس دسته‌بندی کشف کنید</p>
+   <div class="categories-grid">
+    <div class="category-card" data-category="electronics">
+     <div class="category-icon">
+      📱
+     </div>
+     <h3 class="category-title">الکترونیک</h3>
+     <p class="category-count">250+ محصول</p><button class="category-btn" onclick="goToCategory('electronics')">مشاهده همه</button>
+    </div>
+    <div class="category-card" data-category="fashion">
+     <div class="category-icon">
+      👔
+     </div>
+     <h3 class="category-title">مد و پوشاک</h3>
+     <p class="category-count">180+ محصول</p><button class="category-btn" onclick="goToCategory('fashion')">مشاهده همه</button>
+    </div>
+    <div class="category-card" data-category="home">
+     <div class="category-icon">
+      🏠
+     </div>
+     <h3 class="category-title">خانه و آشپزخانه</h3>
+     <p class="category-count">320+ محصول</p><button class="category-btn" onclick="goToCategory('home')">مشاهده همه</button>
+    </div>
+    <div class="category-card" data-category="sports">
+     <div class="category-icon">
+      ⚽
+     </div>
+     <h3 class="category-title">ورزشی</h3>
+     <p class="category-count">150+ محصول</p><button class="category-btn" onclick="goToCategory('sports')">مشاهده همه</button>
+    </div>
+    <div class="category-card" data-category="beauty">
+     <div class="category-icon">
+      💄
+     </div>
+     <h3 class="category-title">زیبایی و سلامت</h3>
+     <p class="category-count">200+ محصول</p><button class="category-btn" onclick="goToCategory('beauty')">مشاهده همه</button>
+    </div>
+    <div class="category-card" data-category="books">
+     <div class="category-icon">
+      📚
+     </div>
+     <h3 class="category-title">کتاب و لوازم تحریر</h3>
+     <p class="category-count">400+ محصول</p><button class="category-btn" onclick="goToCategory('books')">مشاهده همه</button>
+    </div>
+    <div class="category-card" data-category="beauty">
+     <div class="category-icon">
+      💄
+     </div>
+     <h3 class="category-title">زیبایی و سلامت</h3>
+     <p class="category-count">200+ محصول</p><button class="category-btn" onclick="goToCategory('beauty')">مشاهده همه</button>
+    </div>
+   </div>
+  </section><!-- بخش محصولات -->
+  <section class="products-section" id="products">
+   <h2 class="section-title" id="products-title">محصولات پرفروش</h2>
+   <p class="section-subtitle">جدیدترین و محبوب‌ترین محصولات را کشف کنید</p>
+   <div class="products-filter"><button class="filter-btn active" data-filter="all">همه</button> <button class="filter-btn" data-filter="electronics">الکترونیک</button> <button class="filter-btn" data-filter="fashion">مد و پوشاک</button> <button class="filter-btn" data-filter="home">خانه و آشپزخانه</button> <button class="filter-btn" data-filter="sports">ورزشی</button> <button class="filter-btn" data-filter="books">کتاب</button> <button class="filter-btn" data-filter="beauty">زیبایی</button>
+   </div>
+   <div class="products-grid" id="products-grid"><!-- محصولات به صورت داینامیک اضافه می‌شوند -->
+   </div>
+   <div class="pagination" id="pagination"><!-- دکمه‌های صفحه‌بندی به صورت داینامیک اضافه می‌شوند -->
+   </div>
+  </section><!-- بخش درباره ما -->
+  <section class="about-section" id="about">
+   <div class="about-container">
+    <div class="about-content">
+     <h2 class="section-title" style="text-align: right;">درباره Shopland</h2>
+     <p class="about-text">Shopland یک پلتفرم خرید آنلاین پیشرفته است که با استفاده از هوش مصنوعی، تجربه خرید بی‌نظیری را برای شما فراهم می‌کند. ما با ارائه بیش از 10000 محصول متنوع در دسته‌بندی‌های مختلف، همیشه در تلاش هستیم تا بهترین کیفیت و قیمت را به شما ارائه دهیم.</p>
+     <p class="about-text">تیم ما متشکل از متخصصان با تجربه در حوزه تجارت الکترونیک است که با تمرکز بر رضایت مشتری، خدمات باکیفیتی را ارائه می‌دهند. از ارسال سریع گرفته تا پشتیبانی 24 ساعته، همه چیز برای راحتی شما طراحی شده است.</p>
+     <div class="about-stats">
+      <div class="stat-item">
+       <div class="stat-number">
+        10K+
+       </div>
+       <div class="stat-label">
+        محصول
+       </div>
+      </div>
+      <div class="stat-item">
+       <div class="stat-number">
+        50K+
+       </div>
+       <div class="stat-label">
+        مشتری راضی
+       </div>
+      </div>
+      <div class="stat-item">
+       <div class="stat-number">
+        24/7
+       </div>
+       <div class="stat-label">
+        پشتیبانی
+       </div>
+      </div>
+      <div class="stat-item">
+       <div class="stat-number">
+        100%
+       </div>
+       <div class="stat-label">
+        اصالت کالا
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="about-image">
+     <div class="about-icon-large">
+      🛍️
+     </div>
+    </div>
+   </div>
+  </section><!-- بخش ویژگی‌ها -->
+  <section class="features-section" id="features">
+   <h2 class="section-title">چرا Shopland؟</h2>
+   <p class="section-subtitle">مزایای خرید از ما</p>
+   <div class="features-grid">
+    <div class="feature-card">
+     <div class="feature-icon">
+      🚀
+     </div>
+     <h3 class="feature-title">ارسال سریع</h3>
+     <p class="feature-description">ارسال رایگان برای سفارش‌های بالای 500 هزار تومان در کمتر از 24 ساعت</p>
+    </div>
+    <div class="feature-card">
+     <div class="feature-icon">
+      🤖
+     </div>
+     <h3 class="feature-title">هوش مصنوعی پیشرفته</h3>
+     <p class="feature-description">دستیار هوشمند 24/7 برای پاسخگویی به سوالات و راهنمایی شما</p>
+    </div>
+    <div class="feature-card">
+     <div class="feature-icon">
+      💎
+     </div>
+     <h3 class="feature-title">کیفیت تضمینی</h3>
+     <p class="feature-description">تمامی محصولات اصل و با گارانتی معتبر</p>
+    </div>
+    <div class="feature-card">
+     <div class="feature-icon">
+      🔒
+     </div>
+     <h3 class="feature-title">پرداخت امن</h3>
+     <p class="feature-description">درگاه پرداخت امن با رمزنگاری پیشرفته</p>
+    </div>
+    <div class="feature-card">
+     <div class="feature-icon">
+      🎁
+     </div>
+     <h3 class="feature-title">تخفیف‌های ویژه</h3>
+     <p class="feature-description">تخفیف‌های روزانه و فصلی تا 70 درصد</p>
+    </div>
+    <div class="feature-card">
+     <div class="feature-icon">
+      ↩️
+     </div>
+     <h3 class="feature-title">بازگشت آسان</h3>
+     <p class="feature-description">امکان بازگشت کالا تا 7 روز بدون هیچ شرطی</p>
+    </div>
+   </div>
+  </section><!-- بخش بلاگ -->
+  <section class="blog-section" id="blog">
+   <h2 class="section-title">آخرین مقالات</h2>
+   <p class="section-subtitle">اخبار و مطالب مفید درباره خرید آنلاین</p>
+   <div class="blog-grid">
+    <article class="blog-card">
+     <div class="blog-image">
+      📱
+     </div>
+     <div class="blog-content">
+      <div class="blog-meta"><span class="blog-date">15 دی 1403</span> <span class="blog-category">تکنولوژی</span>
+      </div>
+      <h3 class="blog-title">راهنمای خرید گوشی هوشمند در سال 2024</h3>
+      <p class="blog-excerpt">با توجه به تنوع بالای گوشی‌های هوشمند در بازار، انتخاب بهترین گزینه می‌تواند چالش‌برانگیز باشد. در این مقاله به بررسی نکات کلیدی می‌پردازیم...</p><button class="blog-read-more">ادامه مطلب ←</button>
+     </div>
+    </article>
+    <article class="blog-card">
+     <div class="blog-image">
+      🛍️
+     </div>
+     <div class="blog-content">
+      <div class="blog-meta"><span class="blog-date">12 دی 1403</span> <span class="blog-category">خرید آنلاین</span>
+      </div>
+      <h3 class="blog-title">10 نکته طلایی برای خرید امن آنلاین</h3>
+      <p class="blog-excerpt">خرید آنلاین امروزه بخش جدایی‌ناپذیر از زندگی ما شده است. اما چگونه می‌توانیم با اطمینان خرید کنیم؟ در این مقاله نکات مهمی را بررسی می‌کنیم...</p><button class="blog-read-more">ادامه مطلب ←</button>
+     </div>
+    </article>
+    <article class="blog-card">
+     <div class="blog-image">
+      🤖
+     </div>
+     <div class="blog-content">
+      <div class="blog-meta"><span class="blog-date">8 دی 1403</span> <span class="blog-category">هوش مصنوعی</span>
+      </div>
+      <h3 class="blog-title">نقش هوش مصنوعی در تجربه خرید آنلاین</h3>
+      <p class="blog-excerpt">هوش مصنوعی چگونه می‌تواند تجربه خرید آنلاین را متحول کند؟ از پیشنهادات شخصی‌سازی شده تا پشتیبانی 24 ساعته، همه چیز را بررسی می‌کنیم...</p><button class="blog-read-more">ادامه مطلب ←</button>
+     </div>
+    </article>
+    <article class="blog-card">
+     <div class="blog-image">
+      💎
+     </div>
+     <div class="blog-content">
+      <div class="blog-meta"><span class="blog-date">5 دی 1403</span> <span class="blog-category">راهنما</span>
+      </div>
+      <h3 class="blog-title">چگونه محصولات اصل را از تقلبی تشخیص دهیم؟</h3>
+      <p class="blog-excerpt">یکی از نگرانی‌های اصلی در خرید آنلاین، اصالت کالا است. در این مقاله روش‌های تشخیص محصولات اصل را آموزش می‌دهیم...</p><button class="blog-read-more">ادامه مطلب ←</button>
+     </div>
+    </article>
+    <article class="blog-card">
+     <div class="blog-image">
+      🎁
+     </div>
+     <div class="blog-content">
+      <div class="blog-meta"><span class="blog-date">1 دی 1403</span> <span class="blog-category">تخفیف‌ها</span>
+      </div>
+      <h3 class="blog-title">بهترین زمان برای خرید با تخفیف</h3>
+      <p class="blog-excerpt">آیا می‌دانستید که در چه زمان‌هایی می‌توانید بیشترین تخفیف را دریافت کنید؟ در این مقاله به بررسی فصل‌های تخفیف می‌پردازیم...</p><button class="blog-read-more">ادامه مطلب ←</button>
+     </div>
+    </article>
+    <article class="blog-card">
+     <div class="blog-image">
+      📦
+     </div>
+     <div class="blog-content">
+      <div class="blog-meta"><span class="blog-date">28 آذر 1403</span> <span class="blog-category">ارسال</span>
+      </div>
+      <h3 class="blog-title">راهنمای کامل ارسال و بازگشت کالا</h3>
+      <p class="blog-excerpt">همه چیز درباره فرآیند ارسال، زمان تحویل، هزینه‌ها و شرایط بازگشت کالا را در این مقاله جامع بخوانید...</p><button class="blog-read-more">ادامه مطلب ←</button>
+     </div>
+    </article>
+   </div>
+  </section><!-- بخش تماس با ما -->
+  <section class="contact-section" id="contact">
+   <h2 class="section-title">تماس با ما</h2>
+   <p class="section-subtitle">سوالی دارید؟ ما اینجا هستیم تا کمک کنیم</p>
+   <div class="contact-container">
+    <div class="contact-info">
+     <div class="contact-item">
+      <div class="contact-icon">
+       📞
+      </div>
+      <div class="contact-details">
+       <h3>تلفن تماس</h3>
+       <p>021-12345678</p>
+       <p>021-87654321</p>
+      </div>
+     </div>
+     <div class="contact-item">
+      <div class="contact-icon">
+       📧
+      </div>
+      <div class="contact-details">
+       <h3>ایمیل</h3>
+       <p>support@shopland.com</p>
+       <p>info@shopland.com</p>
+      </div>
+     </div>
+     <div class="contact-item">
+      <div class="contact-icon">
+       📍
+      </div>
+      <div class="contact-details">
+       <h3>آدرس</h3>
+       <p>تهران، خیابان ولیعصر</p>
+       <p>پلاک 123، طبقه 5</p>
+      </div>
+     </div>
+     <div class="contact-item">
+      <div class="contact-icon">
+       ⏰
+      </div>
+      <div class="contact-details">
+       <h3>ساعات کاری</h3>
+       <p>شنبه تا پنجشنبه: 9 صبح - 6 عصر</p>
+       <p>پشتیبانی آنلاین: 24/7</p>
+      </div>
+     </div>
+    </div>
+    <form class="contact-form" id="contact-form">
+     <div class="form-group"><label for="contact-name">نام و نام خانوادگی</label> <input type="text" id="contact-name" class="form-input" placeholder="نام خود را وارد کنید" required>
+     </div>
+     <div class="form-group"><label for="contact-email">ایمیل</label> <input type="email" id="contact-email" class="form-input" placeholder="ایمیل خود را وارد کنید" required>
+     </div>
+     <div class="form-group"><label for="contact-subject">موضوع</label> <input type="text" id="contact-subject" class="form-input" placeholder="موضوع پیام" required>
+     </div>
+     <div class="form-group"><label for="contact-message">پیام</label> <textarea id="contact-message" class="form-textarea" rows="5" placeholder="پیام خود را بنویسید..." required></textarea>
+     </div><button type="submit" class="form-submit">ارسال پیام</button>
+    </form>
+   </div>
+  </section><!-- چت‌باکس هوش مصنوعی -->
+  <div class="ai-chatbox"><button class="chat-toggle" id="chat-toggle">🤖</button>
+   <div class="chat-window" id="chat-window">
+    <div class="chat-header">
+     <div class="chat-header-info">
+      <div class="chat-avatar">
+       🤖
+      </div>
+      <div class="chat-status"><span class="chat-name" id="ai-name">دستیار هوشمند</span> <span class="chat-online"> <span class="status-dot"></span> آنلاین </span>
+      </div>
+     </div>
+     <div style="display: flex; align-items: center;"><button class="chat-disable" id="chat-disable" title="غیرفعال کردن چت‌باکس">🚫</button> <button class="chat-close" id="chat-close">×</button>
+     </div>
+    </div>
+    <div class="chat-messages" id="chat-messages"><!-- پیام‌ها به صورت داینامیک اضافه می‌شوند -->
+    </div>
+    <div class="typing-indicator" id="typing-indicator">
+     <div class="typing-dot"></div>
+     <div class="typing-dot"></div>
+     <div class="typing-dot"></div>
+    </div>
+    <div class="chat-input-area">
+     <div class="quick-replies" id="quick-replies"><button class="quick-reply">🆕 محصولات جدید</button> <button class="quick-reply">🎁 تخفیف‌ها</button> <button class="quick-reply">📦 پیگیری سفارش</button> <button class="quick-reply">🚚 ارسال رایگان</button> <button class="quick-reply">💳 روش پرداخت</button>
+     </div>
+     <div class="chat-input-container"><input type="text" class="chat-input" id="chat-input" placeholder="پیام خود را بنویسید..."> <button class="chat-send" id="chat-send">➤</button>
+     </div>
+    </div>
+   </div>
+  </div><!-- فوتر -->
+  <footer class="footer">
+   <div class="footer-content">
+    <div class="footer-section">
+     <h3>درباره Shopland</h3>
+     <p style="color: #b0b0b0; line-height: 1.8;">فروشگاه آنلاین پیشرفته با هوش مصنوعی برای تجربه خرید بی‌نظیر</p>
+     <div class="social-links"><a href="#" class="social-link" target="_blank" rel="noopener noreferrer">📘</a> <a href="#" class="social-link" target="_blank" rel="noopener noreferrer">📷</a> <a href="#" class="social-link" target="_blank" rel="noopener noreferrer">🐦</a> <a href="#" class="social-link" target="_blank" rel="noopener noreferrer">💼</a>
+     </div>
+    </div>
+    <div class="footer-section">
+     <h3>دسترسی سریع</h3>
+     <ul class="footer-links">
+      <li><a href="#home">خانه</a></li>
+      <li><a href="#products">محصولات</a></li>
+      <li><a href="#features">ویژگی‌ها</a></li>
+      <li><a href="#about">درباره ما</a></li>
+      <li><a href="#contact">تماس با ما</a></li>
+     </ul>
+    </div>
+    <div class="footer-section">
+     <h3>خدمات مشتریان</h3>
+     <ul class="footer-links">
+      <li><a href="#">پیگیری سفارش</a></li>
+      <li><a href="#">سوالات متداول</a></li>
+      <li><a href="#">شرایط و قوانین</a></li>
+      <li><a href="#">حریم خصوصی</a></li>
+      <li><a href="#">راهنمای خرید</a></li>
+     </ul>
+    </div>
+    <div class="footer-section">
+     <h3>خبرنامه</h3>
+     <p style="color: #b0b0b0; margin-bottom: 1rem;">از تخفیف‌های ویژه باخبر شوید</p>
+     <form class="newsletter-form"><input type="email" class="newsletter-input" placeholder="ایمیل شما"> <button type="submit" class="newsletter-btn">عضویت</button>
+     </form>
+    </div>
+   </div>
+   <div class="footer-bottom">
+    <p id="footer-text">© 2024 Shopland. تمامی حقوق محفوظ است.</p>
+   </div>
+  </footer>
+  <script>
+        const defaultConfig = {
+            site_title: 'SHOPLAND',
+            hero_title: 'تجربه خرید آنلاین در سطح جهانی',
+            hero_subtitle: 'با هوش مصنوعی پیشرفته، بهترین محصولات را با قیمت‌های باورنکردنی کشف کنید',
+            cta_text: 'شروع خرید',
+            products_title: 'محصولات پرفروش',
+            ai_welcome: 'سلام! من دستیار هوشمند Shopland هستم. چطور می‌تونم کمکتون کنم؟',
+            ai_name: 'دستیار هوشمند',
+            footer_text: '© 2024 Shopland. تمامی حقوق محفوظ است.'
+        };
+
+        let chatMessages = [];
+        let isAITyping = false;
+        let conversationContext = [];
+        let userProfile = {
+            interests: [],
+            sentiment: 'neutral',
+            visitCount: 0,
+            lastVisit: null,
+            preferredLanguage: 'fa'
+        };
+        let learningData = {
+            commonQuestions: {},
+            successfulResponses: {},
+            userFeedback: {}
+        };
+
+        // محصولات نمونه - بیش از 80 محصول در دسته‌بندی‌های مختلف
+        const products = [
+            // الکترونیک (25 محصول)
+            { id: 1, name: 'هدفون بلوتوثی', category: 'electronics', price: '2,500,000', emoji: '🎧', badge: 'جدید', description: 'صدای بی‌نظیر با کیفیت استودیویی' },
+            { id: 2, name: 'ساعت هوشمند', category: 'electronics', price: '3,200,000', emoji: '⌚', badge: 'پرفروش', description: 'ردیابی سلامتی و فعالیت' },
+            { id: 5, name: 'دوربین دیجیتال', category: 'electronics', price: '8,500,000', emoji: '📷', badge: 'پرفروش', description: 'کیفیت تصویر 4K' },
+            { id: 9, name: 'لپ‌تاپ گیمینگ', category: 'electronics', price: '25,000,000', emoji: '💻', badge: 'جدید', description: 'قدرت بی‌نظیر برای بازی' },
+            { id: 10, name: 'موس گیمینگ', category: 'electronics', price: '850,000', emoji: '🖱️', badge: 'پرفروش', description: 'دقت بالا و سرعت عالی' },
+            { id: 11, name: 'کیبورد مکانیکی', category: 'electronics', price: '1,950,000', emoji: '⌨️', badge: 'جدید', description: 'احساس تایپ حرفه‌ای' },
+            { id: 18, name: 'تبلت', category: 'electronics', price: '5,500,000', emoji: '📱', badge: 'جدید', description: 'صفحه نمایش 10 اینچ' },
+            { id: 19, name: 'اسپیکر بلوتوثی', category: 'electronics', price: '1,350,000', emoji: '🔊', badge: 'پرفروش', description: 'صدای قدرتمند و باس عمیق' },
+            { id: 21, name: 'ماوس پد', category: 'electronics', price: '180,000', emoji: '🖼️', badge: 'جدید', description: 'سطح صاف و مقاوم' },
+            { id: 22, name: 'پاوربانک', category: 'electronics', price: '750,000', emoji: '🔋', badge: 'پرفروش', description: 'ظرفیت 20000 میلی‌آمپر' },
+            { id: 26, name: 'هندزفری', category: 'electronics', price: '420,000', emoji: '🎵', badge: 'جدید', description: 'کیفیت صدای HD' },
+            { id: 29, name: 'گوشی هوشمند', category: 'electronics', price: '15,000,000', emoji: '📱', badge: 'پرفروش', description: 'دوربین 108 مگاپیکسل' },
+            { id: 30, name: 'مانیتور گیمینگ', category: 'electronics', price: '12,000,000', emoji: '🖥️', badge: 'جدید', description: '144Hz و 1ms' },
+            { id: 31, name: 'وب‌کم HD', category: 'electronics', price: '980,000', emoji: '📹', badge: 'پرفروش', description: 'کیفیت 1080p' },
+            { id: 32, name: 'میکروفون استودیویی', category: 'electronics', price: '2,200,000', emoji: '🎙️', badge: 'جدید', description: 'صدای کریستالی' },
+            { id: 33, name: 'هارد اکسترنال', category: 'electronics', price: '3,500,000', emoji: '💾', badge: 'پرفروش', description: 'ظرفیت 2 ترابایت' },
+            { id: 34, name: 'فلش مموری', category: 'electronics', price: '450,000', emoji: '💿', badge: '30% تخفیف', description: 'سرعت بالا 128GB' },
+            { id: 35, name: 'شارژر وایرلس', category: 'electronics', price: '680,000', emoji: '🔌', badge: 'جدید', description: 'شارژ سریع 15W' },
+            { id: 36, name: 'کابل USB-C', category: 'electronics', price: '150,000', emoji: '🔗', badge: 'پرفروش', description: 'طول 2 متر' },
+            { id: 37, name: 'هاب USB', category: 'electronics', price: '520,000', emoji: '🔌', badge: 'جدید', description: '7 پورت USB 3.0' },
+            { id: 38, name: 'ریموت کنترل هوشمند', category: 'electronics', price: '890,000', emoji: '📡', badge: 'پرفروش', description: 'کنترل تمام دستگاه‌ها' },
+            { id: 39, name: 'دوربین امنیتی', category: 'electronics', price: '1,800,000', emoji: '📹', badge: 'جدید', description: 'دید در شب' },
+            { id: 40, name: 'پرینتر لیزری', category: 'electronics', price: '4,500,000', emoji: '🖨️', badge: 'پرفروش', description: 'چاپ رنگی' },
+            { id: 41, name: 'اسکنر', category: 'electronics', price: '2,100,000', emoji: '📠', badge: 'جدید', description: 'کیفیت 4800 DPI' },
+            { id: 42, name: 'روتر وای‌فای', category: 'electronics', price: '1,650,000', emoji: '📶', badge: 'پرفروش', description: 'سرعت گیگابیتی' },
+
+            // مد و پوشاک (15 محصول)
+            { id: 4, name: 'کوله پشتی', category: 'fashion', price: '950,000', emoji: '🎒', badge: 'جدید', description: 'طراحی مدرن و کاربردی' },
+            { id: 6, name: 'عینک آفتابی', category: 'fashion', price: '650,000', emoji: '🕶️', badge: '20% تخفیف', description: 'محافظت UV کامل' },
+            { id: 12, name: 'تی‌شرت ورزشی', category: 'fashion', price: '380,000', emoji: '👕', badge: '40% تخفیف', description: 'پارچه تنفس‌پذیر' },
+            { id: 13, name: 'شلوار جین', category: 'fashion', price: '1,200,000', emoji: '👖', badge: 'جدید', description: 'طراحی مدرن و راحت' },
+            { id: 20, name: 'کیف دستی', category: 'fashion', price: '890,000', emoji: '👜', badge: '35% تخفیف', description: 'چرم طبیعی و باکیفیت' },
+            { id: 27, name: 'کلاه', category: 'fashion', price: '280,000', emoji: '🧢', badge: '20% تخفیف', description: 'طراحی اسپرت' },
+            { id: 43, name: 'کفش کتانی', category: 'fashion', price: '1,450,000', emoji: '👟', badge: 'جدید', description: 'راحتی تمام روز' },
+            { id: 44, name: 'کت اسپرت', category: 'fashion', price: '2,800,000', emoji: '🧥', badge: 'پرفروش', description: 'مناسب تمام فصول' },
+            { id: 45, name: 'شال و کلاه', category: 'fashion', price: '420,000', emoji: '🧣', badge: '25% تخفیف', description: 'بافت نرم و گرم' },
+            { id: 46, name: 'دستکش', category: 'fashion', price: '180,000', emoji: '🧤', badge: 'جدید', description: 'چرم اصل' },
+            { id: 47, name: 'کمربند', category: 'fashion', price: '350,000', emoji: '👔', badge: 'پرفروش', description: 'چرم طبیعی' },
+            { id: 48, name: 'ساعت مچی', category: 'fashion', price: '2,500,000', emoji: '⌚', badge: 'جدید', description: 'طراحی کلاسیک' },
+            { id: 49, name: 'کیف لپ‌تاپ', category: 'fashion', price: '1,100,000', emoji: '💼', badge: 'پرفروش', description: 'محافظت کامل' },
+            { id: 50, name: 'کفش رسمی', category: 'fashion', price: '1,850,000', emoji: '👞', badge: 'جدید', description: 'چرم اصل ایتالیایی' },
+            { id: 51, name: 'پیراهن مردانه', category: 'fashion', price: '680,000', emoji: '👔', badge: '30% تخفیف', description: 'پارچه مرغوب' },
+
+            // خانه و آشپزخانه (15 محصول)
+            { id: 7, name: 'میکسر آشپزخانه', category: 'home', price: '1,200,000', emoji: '🍹', badge: 'جدید', description: 'قدرتمند و چندکاره' },
+            { id: 15, name: 'قهوه‌ساز', category: 'home', price: '2,800,000', emoji: '☕', badge: 'جدید', description: 'قهوه حرفه‌ای در خانه' },
+            { id: 16, name: 'چراغ مطالعه', category: 'home', price: '450,000', emoji: '💡', badge: '25% تخفیف', description: 'نور قابل تنظیم' },
+            { id: 24, name: 'ظرف نگهدارنده', category: 'home', price: '220,000', emoji: '🥡', badge: '15% تخفیف', description: 'مناسب برای مایکروویو' },
+            { id: 28, name: 'چای‌ساز', category: 'home', price: '980,000', emoji: '🍵', badge: 'جدید', description: 'دمای قابل تنظیم' },
+            { id: 52, name: 'مایکروویو', category: 'home', price: '3,500,000', emoji: '📻', badge: 'پرفروش', description: 'ظرفیت 28 لیتر' },
+            { id: 53, name: 'یخچال مینی', category: 'home', price: '4,200,000', emoji: '🧊', badge: 'جدید', description: 'مناسب اتاق' },
+            { id: 54, name: 'جاروبرقی', category: 'home', price: '2,900,000', emoji: '🧹', badge: 'پرفروش', description: 'قدرت مکش بالا' },
+            { id: 55, name: 'اتو بخار', category: 'home', price: '1,450,000', emoji: '👔', badge: 'جدید', description: 'ضد جرم' },
+            { id: 56, name: 'پنکه رومیزی', category: 'home', price: '680,000', emoji: '💨', badge: '20% تخفیف', description: 'سه سرعته' },
+            { id: 57, name: 'بخاری برقی', category: 'home', price: '1,800,000', emoji: '🔥', badge: 'پرفروش', description: 'گرمایش سریع' },
+            { id: 58, name: 'ترازو آشپزخانه', category: 'home', price: '320,000', emoji: '⚖️', badge: 'جدید', description: 'دقت 1 گرم' },
+            { id: 59, name: 'سرویس قابلمه', category: 'home', price: '2,500,000', emoji: '🍳', badge: 'پرفروش', description: '12 پارچه' },
+            { id: 60, name: 'آبمیوه‌گیری', category: 'home', price: '1,650,000', emoji: '🥤', badge: 'جدید', description: 'موتور قوی' },
+            { id: 61, name: 'توستر', category: 'home', price: '890,000', emoji: '🍞', badge: '25% تخفیف', description: 'دو اسلات' },
+
+            // ورزشی (12 محصول)
+            { id: 3, name: 'کفش ورزشی', category: 'sports', price: '1,800,000', emoji: '👟', badge: '30% تخفیف', description: 'راحتی و سبکی بی‌نظیر' },
+            { id: 8, name: 'توپ فوتبال', category: 'sports', price: '450,000', emoji: '⚽', badge: 'پرفروش', description: 'استاندارد حرفه‌ای' },
+            { id: 17, name: 'دمبل', category: 'sports', price: '680,000', emoji: '🏋️', badge: 'پرفروش', description: 'وزن قابل تنظیم' },
+            { id: 25, name: 'توپ بسکتبال', category: 'sports', price: '520,000', emoji: '🏀', badge: 'پرفروش', description: 'سایز استاندارد' },
+            { id: 62, name: 'تردمیل', category: 'sports', price: '8,500,000', emoji: '🏃', badge: 'جدید', description: 'موتور 2 اسب' },
+            { id: 63, name: 'دوچرخه ثابت', category: 'sports', price: '5,200,000', emoji: '🚴', badge: 'پرفروش', description: 'مقاومت مغناطیسی' },
+            { id: 64, name: 'توپ والیبال', category: 'sports', price: '380,000', emoji: '🏐', badge: 'جدید', description: 'استاندارد بین‌المللی' },
+            { id: 65, name: 'راکت تنیس', category: 'sports', price: '1,200,000', emoji: '🎾', badge: 'پرفروش', description: 'کربن فایبر' },
+            { id: 66, name: 'کیسه بوکس', category: 'sports', price: '2,800,000', emoji: '🥊', badge: 'جدید', description: 'وزن 40 کیلو' },
+            { id: 67, name: 'طناب ورزشی', category: 'sports', price: '180,000', emoji: '🪢', badge: '20% تخفیف', description: 'قابل تنظیم' },
+            { id: 68, name: 'مت یوگا', category: 'sports', price: '420,000', emoji: '🧘', badge: 'پرفروش', description: 'ضد لغزش' },
+            { id: 69, name: 'کش ورزشی', category: 'sports', price: '250,000', emoji: '💪', badge: 'جدید', description: 'سه سطح مقاومت' },
+
+            // کتاب و لوازم تحریر (10 محصول)
+            { id: 14, name: 'کتاب رمان', category: 'books', price: '250,000', emoji: '📖', badge: 'پرفروش', description: 'داستانی جذاب و هیجان‌انگیز' },
+            { id: 23, name: 'کتاب آموزشی', category: 'books', price: '320,000', emoji: '📚', badge: 'جدید', description: 'آموزش گام به گام' },
+            { id: 70, name: 'دفتر یادداشت', category: 'books', price: '120,000', emoji: '📓', badge: 'پرفروش', description: 'جلد چرمی' },
+            { id: 71, name: 'خودکار', category: 'books', price: '45,000', emoji: '🖊️', badge: 'جدید', description: 'بسته 10 تایی' },
+            { id: 72, name: 'مداد رنگی', category: 'books', price: '180,000', emoji: '🖍️', badge: 'پرفروش', description: '48 رنگ' },
+            { id: 73, name: 'ماژیک', category: 'books', price: '95,000', emoji: '🖌️', badge: '15% تخفیف', description: 'بسته 12 تایی' },
+            { id: 74, name: 'کتاب داستان کودک', category: 'books', price: '150,000', emoji: '📕', badge: 'جدید', description: 'تصویرسازی زیبا' },
+            { id: 75, name: 'دیکشنری', category: 'books', price: '420,000', emoji: '📘', badge: 'پرفروش', description: 'انگلیسی-فارسی' },
+            { id: 76, name: 'کتاب آشپزی', category: 'books', price: '280,000', emoji: '📙', badge: 'جدید', description: '500 دستور پخت' },
+            { id: 77, name: 'کتاب هنر', category: 'books', price: '350,000', emoji: '🎨', badge: 'پرفروش', description: 'تصاویر رنگی' },
+
+            // زیبایی و سلامت (8 محصول)
+            { id: 78, name: 'سشوار', category: 'beauty', price: '1,200,000', emoji: '💇', badge: 'جدید', description: 'یونیزه کننده' },
+            { id: 79, name: 'اتو مو', category: 'beauty', price: '980,000', emoji: '💆', badge: 'پرفروش', description: 'سرامیکی' },
+            { id: 80, name: 'ماشین اصلاح', category: 'beauty', price: '850,000', emoji: '💈', badge: 'جدید', description: 'شارژی' },
+            { id: 81, name: 'ترازو دیجیتال', category: 'beauty', price: '420,000', emoji: '⚖️', badge: 'پرفروش', description: 'تحلیل بدن' },
+            { id: 82, name: 'فشارسنج', category: 'beauty', price: '680,000', emoji: '🩺', badge: 'جدید', description: 'دیجیتال' },
+            { id: 83, name: 'ماساژور', category: 'beauty', price: '1,500,000', emoji: '💆', badge: 'پرفروش', description: 'چند حالته' },
+            { id: 84, name: 'دستگاه بخور', category: 'beauty', price: '520,000', emoji: '💨', badge: '20% تخفیف', description: 'اولتراسونیک' },
+            { id: 85, name: 'آینه آرایشی', category: 'beauty', price: '750,000', emoji: '🪞', badge: 'جدید', description: 'LED دار' }
+        ];
+
+        let currentPage = 1;
+        let currentFilter = 'all';
+        const itemsPerPage = 6;
+
+        // تابع رندر محصولات با صفحه‌بندی
+        function renderProducts(filter = 'all', page = 1) {
+            currentFilter = filter;
+            currentPage = page;
+            
+            const grid = document.getElementById('products-grid');
+            const filteredProducts = filter === 'all' ? products : products.filter(p => p.category === filter);
+            
+            // محاسبه محصولات صفحه فعلی
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageProducts = filteredProducts.slice(startIndex, endIndex);
+            
+            grid.innerHTML = pageProducts.map(product => `
+                <div class="product-card" data-category="${product.category}">
+                    <div class="product-image">
+                        ${product.emoji}
+                        <div class="product-badge">${product.badge}</div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${getCategoryName(product.category)}</div>
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-footer">
+                            <div class="product-price">${product.price} تومان</div>
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">افزودن</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            renderPagination(filteredProducts.length);
+            
+            // اسکرول به بالای بخش محصولات
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderPagination(totalItems) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // دکمه قبلی
+            paginationHTML += `
+                <button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    ← قبلی
+                </button>
+            `;
+            
+            // دکمه‌های شماره صفحه
+            for (let i = 1; i <= totalPages; i++) {
+                if (
+                    i === 1 || 
+                    i === totalPages || 
+                    (i >= currentPage - 1 && i <= currentPage + 1)
+                ) {
+                    paginationHTML += `
+                        <button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    paginationHTML += `<span class="pagination-info">...</span>`;
+                }
+            }
+            
+            // دکمه بعدی
+            paginationHTML += `
+                <button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    بعدی →
+                </button>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        function changePage(page) {
+            renderProducts(currentFilter, page);
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                electronics: 'الکترونیک',
+                fashion: 'مد و پوشاک',
+                home: 'خانه',
+                sports: 'ورزشی',
+                books: 'کتاب',
+                beauty: 'زیبایی'
+            };
+            return names[category] || category;
+        }
+
+        // فیلتر محصولات
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderProducts(btn.dataset.filter, 1);
+            });
+        });
+
+        // جستجوی پیشرفته محصولات
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        let searchTimeout;
+
+        function normalizeText(text) {
+            // حذف فاصله‌ها، نیم‌فاصله‌ها و تبدیل به حروف کوچک
+            return text.toLowerCase().trim()
+                .replace(/\s+/g, '')
+                .replace(/ی/g, 'ي')
+                .replace(/ک/g, 'ك')
+                .replace(/ه‌/g, 'ه');
+        }
+
+        function createSearchKeywords(product) {
+            // ایجاد کلمات کلیدی برای هر محصول
+            const keywords = [];
+            const name = product.name.toLowerCase();
+            const category = getCategoryName(product.category).toLowerCase();
+            const description = product.description.toLowerCase();
+            
+            // اضافه کردن نام محصول
+            keywords.push(name);
+            keywords.push(normalizeText(name));
+            
+            // اضافه کردن کلمات جداگانه نام
+            name.split(' ').forEach(word => {
+                if (word.length > 1) {
+                    keywords.push(word);
+                    keywords.push(normalizeText(word));
+                }
+            });
+            
+            // اضافه کردن دسته‌بندی
+            keywords.push(category);
+            keywords.push(normalizeText(category));
+            
+            // اضافه کردن کلمات توضیحات
+            description.split(' ').forEach(word => {
+                if (word.length > 2) {
+                    keywords.push(word);
+                    keywords.push(normalizeText(word));
+                }
+            });
+            
+            // کلمات مرتبط خاص
+            const relatedWords = {
+                'کفش': ['shoe', 'کتانی', 'ورزشی', 'رسمی', 'پا', 'پوشاک'],
+                'گوشی': ['موبایل', 'phone', 'تلفن', 'هوشمند', 'smartphone'],
+                'لپ تاپ': ['لپتاپ', 'laptop', 'کامپیوتر', 'رایانه'],
+                'هدفون': ['headphone', 'هدست', 'گوشی', 'صدا', 'موزیک'],
+                'ساعت': ['watch', 'مچی', 'زمان', 'هوشمند'],
+                'کتاب': ['book', 'کتب', 'مطالعه', 'خواندن'],
+                'دوربین': ['camera', 'عکاسی', 'فیلم', 'تصویر'],
+                'تی شرت': ['تیشرت', 'shirt', 'لباس', 'پوشاک'],
+                'شلوار': ['pants', 'لباس', 'پوشاک'],
+                'کوله': ['backpack', 'کیف', 'پشتی'],
+                'عینک': ['glasses', 'آفتابی', 'چشم'],
+                'توپ': ['ball', 'ورزش', 'بازی'],
+                'دمبل': ['وزنه', 'بدنسازی', 'ورزش'],
+                'قهوه': ['coffee', 'نوشیدنی', 'کافی'],
+                'چای': ['tea', 'نوشیدنی'],
+                'میکسر': ['blender', 'مخلوط', 'آشپزی'],
+                'یخچال': ['fridge', 'سرد', 'خنک'],
+                'جارو': ['vacuum', 'نظافت', 'تمیز'],
+                'سشوار': ['dryer', 'مو', 'خشک'],
+                'اتو': ['iron', 'صاف', 'مو']
+            };
+            
+            // اضافه کردن کلمات مرتبط
+            Object.keys(relatedWords).forEach(key => {
+                if (name.includes(key) || description.includes(key)) {
+                    keywords.push(...relatedWords[key]);
+                }
+            });
+            
+            return [...new Set(keywords)]; // حذف تکراری‌ها
+        }
+
+        function calculateRelevanceScore(product, query) {
+            const keywords = createSearchKeywords(product);
+            const normalizedQuery = normalizeText(query);
+            const queryWords = query.toLowerCase().split(' ').filter(w => w.length > 1);
+            
+            let score = 0;
+            
+            // امتیاز برای تطابق کامل نام
+            if (normalizeText(product.name).includes(normalizedQuery)) {
+                score += 100;
+            }
+            
+            // امتیاز برای شروع نام با کلمه جستجو
+            if (normalizeText(product.name).startsWith(normalizedQuery)) {
+                score += 50;
+            }
+            
+            // امتیاز برای هر کلمه جستجو که پیدا شود
+            queryWords.forEach(word => {
+                const normalizedWord = normalizeText(word);
+                keywords.forEach(keyword => {
+                    if (keyword.includes(normalizedWord) || normalizedWord.includes(keyword)) {
+                        score += 10;
+                    }
+                    if (keyword === normalizedWord) {
+                        score += 20;
+                    }
+                });
+            });
+            
+            // امتیاز برای تطابق دسته‌بندی
+            if (normalizeText(getCategoryName(product.category)).includes(normalizedQuery)) {
+                score += 30;
+            }
+            
+            // امتیاز برای محصولات پرفروش
+            if (product.badge === 'پرفروش') {
+                score += 5;
+            }
+            
+            return score;
+        }
+
+        function searchProducts(query) {
+            if (!query || query.length < 1) {
+                searchResults.classList.remove('active');
+                searchResults.innerHTML = '';
+                return;
+            }
+
+            // محاسبه امتیاز ارتباط برای هر محصول
+            const scoredProducts = products.map(product => ({
+                product,
+                score: calculateRelevanceScore(product, query)
+            }));
+            
+            // فیلتر محصولات با امتیاز بیشتر از صفر و مرتب‌سازی
+            const results = scoredProducts
+                .filter(item => item.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .map(item => item.product);
+
+            if (results.length === 0) {
+                // پیشنهاد محصولات مشابه
+                const suggestions = products.slice(0, 3);
+                searchResults.innerHTML = `
+                    <div class="search-no-results">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                        <div style="color: #ffffff; font-weight: 700; margin-bottom: 0.5rem;">محصولی با عبارت "${query}" یافت نشد</div>
+                        <div style="margin-bottom: 1.5rem; font-size: 0.9rem; color: #b0b0b0;">شاید این محصولات مورد نظر شما باشند:</div>
+                        ${suggestions.map(product => `
+                            <div class="search-result-item" onclick="goToProduct(${product.id})" style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1rem;">
+                                <div class="search-result-icon">${product.emoji}</div>
+                                <div class="search-result-info">
+                                    <div class="search-result-name">${product.name}</div>
+                                    <div class="search-result-category">${getCategoryName(product.category)}</div>
+                                    <div class="search-result-price">${product.price} تومان</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                const displayCount = Math.min(results.length, 8);
+                searchResults.innerHTML = `
+                    <div style="padding: 1rem 1.5rem; background: rgba(0, 212, 255, 0.1); border-bottom: 1px solid rgba(0, 212, 255, 0.3);">
+                        <div style="color: #00d4ff; font-weight: 700; font-size: 0.95rem;">
+                            ✓ ${results.length} محصول یافت شد
+                        </div>
+                    </div>
+                    ${results.slice(0, displayCount).map((product, index) => `
+                        <div class="search-result-item" onclick="goToProduct(${product.id})" style="animation: slideIn 0.3s ease ${index * 0.05}s backwards;">
+                            <div class="search-result-icon">${product.emoji}</div>
+                            <div class="search-result-info">
+                                <div class="search-result-name">${product.name}</div>
+                                <div class="search-result-category">${getCategoryName(product.category)}</div>
+                                <div class="search-result-price">${product.price} تومان</div>
+                            </div>
+                            ${product.badge ? `<div style="background: linear-gradient(135deg, #ff0080, #ff0040); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; white-space: nowrap;">${product.badge}</div>` : ''}
+                        </div>
+                    `).join('')}
+                    ${results.length > displayCount ? `
+                        <div style="padding: 1rem; text-align: center; color: #b0b0b0; font-size: 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            و ${results.length - displayCount} محصول دیگر...
+                        </div>
+                    ` : ''}
+                `;
+            }
+
+            searchResults.classList.add('active');
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchProducts(e.target.value);
+            }, 300);
+        });
+
+        searchInput.addEventListener('focus', (e) => {
+            if (e.target.value.length >= 2) {
+                searchProducts(e.target.value);
+            }
+        });
+
+        // بستن نتایج جستجو با کلیک خارج از آن
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-box')) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // رفتن به محصول از نتایج جستجو
+        window.goToProduct = function(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                searchResults.classList.remove('active');
+                searchInput.value = '';
+                
+                // رفتن به بخش محصولات و فیلتر کردن
+                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    const filterBtn = document.querySelector(`.filter-btn[data-filter="${product.category}"]`);
+                    if (filterBtn) {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        filterBtn.classList.add('active');
+                        renderProducts(product.category, 1);
+                    }
+                    
+                    // نمایش اطلاعات محصول
+                    showNotification(`${product.name} - ${product.price} تومان`);
+                }, 500);
+            }
+        };
+
+        // مدیریت سبد خرید
+        let cartItems = [];
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cartItems.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cartItems.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+
+            updateCartUI();
+            showNotification(`${product.name} به سبد خرید اضافه شد`);
+        }
+
+        function updateCartUI() {
+            const cartBadge = document.getElementById('cart-badge');
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const cartTotalValue = document.getElementById('cart-total-value');
+
+            // به‌روزرسانی تعداد
+            const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            cartBadge.textContent = totalItems;
+
+            // به‌روزرسانی لیست محصولات
+            if (cartItems.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="cart-empty">
+                        <div class="cart-empty-icon">🛒</div>
+                        <div class="cart-empty-text">سبد خرید شما خالی است</div>
+                        <button class="btn-primary" onclick="closeCart(); document.getElementById('products').scrollIntoView({behavior: 'smooth'});">شروع خرید</button>
+                    </div>
+                `;
+            } else {
+                cartItemsContainer.innerHTML = cartItems.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-image">${item.emoji}</div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${item.price} تومان</div>
+                            <div class="cart-item-quantity">
+                                <button class="quantity-btn" onclick="decreaseQuantity(${item.id})">−</button>
+                                <span class="quantity-value">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="increaseQuantity(${item.id})">+</button>
+                            </div>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${item.id})">🗑️</button>
+                    </div>
+                `).join('');
+            }
+
+            // محاسبه جمع کل
+            const total = cartItems.reduce((sum, item) => {
+                const price = parseInt(item.price.replace(/,/g, ''));
+                return sum + (price * item.quantity);
+            }, 0);
+
+            cartTotalValue.textContent = total.toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function increaseQuantity(productId) {
+            const item = cartItems.find(i => i.id === productId);
+            if (item) {
+                item.quantity++;
+                updateCartUI();
+            }
+        }
+
+        function decreaseQuantity(productId) {
+            const item = cartItems.find(i => i.id === productId);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity--;
+                    updateCartUI();
+                } else {
+                    removeFromCart(productId);
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            cartItems = cartItems.filter(item => item.id !== productId);
+            updateCartUI();
+            showNotification('محصول از سبد خرید حذف شد');
+        }
+
+        function openCart() {
+            document.getElementById('cart-panel').classList.add('active');
+            document.getElementById('cart-overlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCart() {
+            document.getElementById('cart-panel').classList.remove('active');
+            document.getElementById('cart-overlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // منوی همبرگری
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function toggleMobileMenu() {
+            hamburgerMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            mobileMenuOverlay.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        function closeMobileMenu() {
+            hamburgerMenu.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerMenu.addEventListener('click', toggleMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        // بستن منو با کلیک روی لینک‌ها
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                closeMobileMenu();
+            });
+        });
+
+        // رویدادهای سبد خرید
+        document.getElementById('cart-icon').addEventListener('click', openCart);
+        document.getElementById('cart-close-btn').addEventListener('click', closeCart);
+        document.getElementById('cart-overlay').addEventListener('click', closeCart);
+
+        document.getElementById('cart-checkout-btn').addEventListener('click', () => {
+            if (cartItems.length === 0) {
+                showNotification('سبد خرید شما خالی است!');
+                return;
+            }
+
+            const total = cartItems.reduce((sum, item) => {
+                const price = parseInt(item.price.replace(/,/g, ''));
+                return sum + (price * item.quantity);
+            }, 0);
+
+            showNotification(`در حال انتقال به صفحه پرداخت... مبلغ: ${total.toLocaleString('fa-IR')} تومان`);
+            
+            setTimeout(() => {
+                showNotification('این یک نسخه نمایشی است. عملیات پرداخت در نسخه واقعی فعال خواهد شد.');
+            }, 2000);
+        });
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: linear-gradient(135deg, #00d4ff, #0099ff);
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 50px;
+                box-shadow: 0 10px 30px rgba(0, 212, 255, 0.5);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+
+
+        // افکت اسکرول هدر
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // ذرات پس‌زمینه
+        function createParticles() {
+            const bg = document.querySelector('.animated-background');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 100 + 50 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+                bg.appendChild(particle);
+            }
+        }
+
+        // چت‌باکس هوش مصنوعی
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const chatClose = document.getElementById('chat-close');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const chatMessagesContainer = document.getElementById('chat-messages');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        // دکمه انتقال به پشتیبان انسانی
+        function transferToHumanSupport() {
+            addMessage('در حال انتقال به پشتیبان انسانی... ⏳', 'ai', { skipFeedback: true });
+            
+            setTimeout(() => {
+                addMessage('متأسفانه در حال حاضر پشتیبان انسانی در دسترس نیست. 😔 اما من سعی می‌کنم بهترین کمک رو بهتون بدم! لطفاً سوالتون رو دقیق‌تر بپرسید.', 'ai', {
+                    buttons: [
+                        { label: '📧 ارسال ایمیل', action: 'help', value: 'ارسال ایمیل به پشتیبانی' },
+                        { label: '📞 تماس تلفنی', action: 'help', value: 'شماره تماس' }
+                    ]
+                });
+            }, 2000);
+        }
+
+        // تغییر زبان چت‌باکس
+        function changeLanguage(lang) {
+            userProfile.preferredLanguage = lang;
+            if (lang === 'en') {
+                addMessage('Language changed to English! 🇬🇧 How can I help you?', 'ai', { skipFeedback: true });
+            } else {
+                addMessage('زبان به فارسی تغییر کرد! 🇮🇷 چطور می‌تونم کمکتون کنم؟', 'ai', { skipFeedback: true });
+            }
+        }
+
+        // افزودن دکمه تنظیمات به چت
+        function showChatSettings() {
+            const settingsHTML = `
+                <div style="padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 15px; margin: 1rem 0;">
+                    <h4 style="color: #00d4ff; margin-bottom: 1rem;">⚙️ تنظیمات چت</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        <button onclick="changeLanguage('fa')" style="padding: 0.7rem; background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.5); border-radius: 10px; color: #e0e0e0; cursor: pointer;">🇮🇷 فارسی</button>
+                        <button onclick="changeLanguage('en')" style="padding: 0.7rem; background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.5); border-radius: 10px; color: #e0e0e0; cursor: pointer;">🇬🇧 English</button>
+                        <button onclick="transferToHumanSupport()" style="padding: 0.7rem; background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.5); border-radius: 10px; color: #e0e0e0; cursor: pointer;">👤 انتقال به پشتیبان</button>
+                        <button onclick="clearChatHistory()" style="padding: 0.7rem; background: rgba(255, 0, 80, 0.2); border: 1px solid rgba(255, 0, 80, 0.5); border-radius: 10px; color: #ff0080; cursor: pointer;">🗑️ پاک کردن تاریخچه</button>
+                    </div>
+                </div>
+            `;
+            
+            const settingsDiv = document.createElement('div');
+            settingsDiv.innerHTML = settingsHTML;
+            chatMessagesContainer.appendChild(settingsDiv);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        }
+
+        // پاک کردن تاریخچه چت
+        window.clearChatHistory = function() {
+            chatMessages = [];
+            conversationContext = [];
+            chatMessagesContainer.innerHTML = '';
+            addMessage('تاریخچه چت پاک شد. ✓ چطور می‌تونم کمکتون کنم؟', 'ai', { skipFeedback: true });
+        };
+
+        window.transferToHumanSupport = transferToHumanSupport;
+        window.changeLanguage = changeLanguage;
+        window.showChatSettings = showChatSettings;
+
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.add('active');
+            if (chatMessages.length === 0) {
+                addWelcomeMessage();
+            }
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.remove('active');
+        });
+
+        const chatDisable = document.getElementById('chat-disable');
+        const aiChatbox = document.querySelector('.ai-chatbox');
+
+        chatDisable.addEventListener('click', () => {
+            const confirmDisable = document.createElement('div');
+            confirmDisable.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(15, 15, 35, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 2.5rem;
+                border-radius: 25px;
+                box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+                z-index: 10001;
+                border: 2px solid rgba(255, 0, 80, 0.5);
+                text-align: center;
+                max-width: 400px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            confirmDisable.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                <h3 style="color: #ffffff; font-size: 1.5rem; margin-bottom: 1rem;">غیرفعال کردن چت‌باکس</h3>
+                <p style="color: #b0b0b0; margin-bottom: 2rem; line-height: 1.8;">آیا مطمئن هستید که می‌خواهید دستیار هوشمند را غیرفعال کنید؟</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="confirm-yes" style="padding: 0.8rem 2rem; background: linear-gradient(135deg, #ff0080, #ff0040); border: none; border-radius: 50px; color: white; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">بله، غیرفعال کن</button>
+                    <button id="confirm-no" style="padding: 0.8rem 2rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(0, 212, 255, 0.5); border-radius: 50px; color: #00d4ff; font-weight: 700; cursor: pointer; transition: all 0.3s ease;">انصراف</button>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmDisable);
+            
+            document.getElementById('confirm-yes').addEventListener('click', () => {
+                aiChatbox.classList.add('disabled');
+                confirmDisable.remove();
+                showNotification('چت‌باکس هوش مصنوعی غیرفعال شد');
+            });
+            
+            document.getElementById('confirm-no').addEventListener('click', () => {
+                confirmDisable.remove();
+            });
+            
+            // افکت هاور برای دکمه‌ها
+            const yesBtn = document.getElementById('confirm-yes');
+            const noBtn = document.getElementById('confirm-no');
+            
+            yesBtn.addEventListener('mouseenter', () => {
+                yesBtn.style.transform = 'scale(1.05)';
+                yesBtn.style.boxShadow = '0 10px 30px rgba(255, 0, 80, 0.5)';
+            });
+            yesBtn.addEventListener('mouseleave', () => {
+                yesBtn.style.transform = 'scale(1)';
+                yesBtn.style.boxShadow = 'none';
+            });
+            
+            noBtn.addEventListener('mouseenter', () => {
+                noBtn.style.transform = 'scale(1.05)';
+                noBtn.style.background = 'rgba(0, 212, 255, 0.2)';
+            });
+            noBtn.addEventListener('mouseleave', () => {
+                noBtn.style.transform = 'scale(1)';
+                noBtn.style.background = 'rgba(255, 255, 255, 0.1)';
+            });
+        });
+
+        function addWelcomeMessage() {
+            userProfile.visitCount++;
+            const currentTime = new Date().getHours();
+            let greeting = 'سلام';
+            
+            if (currentTime >= 5 && currentTime < 12) {
+                greeting = 'صبح بخیر';
+            } else if (currentTime >= 12 && currentTime < 17) {
+                greeting = 'ظهر بخیر';
+            } else if (currentTime >= 17 && currentTime < 21) {
+                greeting = 'عصر بخیر';
+            } else {
+                greeting = 'شب بخیر';
+            }
+
+            let welcomeMsg = '';
+            if (userProfile.visitCount === 1) {
+                welcomeMsg = `${greeting}! 👋 خوش اومدید به Shopland. من دستیار هوشمند شما هستم و می‌تونم در انتخاب بهترین محصولات کمکتون کنم. چطور می‌تونم کمکتون کنم؟`;
+            } else {
+                welcomeMsg = `${greeting}! 🌟 خوشحالم که دوباره برگشتید! چطور می‌تونم امروز کمکتون کنم؟`;
+            }
+
+            addMessage(welcomeMsg, 'ai', {
+                buttons: [
+                    { label: '🛍️ مشاهده محصولات', action: 'help', value: 'محصولات جدید' },
+                    { label: '🎁 تخفیف‌ها', action: 'help', value: 'تخفیف‌های ویژه' },
+                    { label: '📦 پیگیری سفارش', action: 'help', value: 'پیگیری سفارش' },
+                    { label: '💬 سوالات متداول', action: 'help', value: 'سوالات متداول' }
+                ],
+                skipFeedback: true
+            });
+
+            // پیشنهاد بر اساس علایق قبلی
+            if (userProfile.interests.length > 0) {
+                setTimeout(() => {
+                    const interest = userProfile.interests[0];
+                    addMessage(`با توجه به علاقه قبلی شما به ${interest}، محصولات جدید این دسته رو ببینید! 🎯`, 'ai', {
+                        buttons: [
+                            { label: `مشاهده ${interest}`, action: 'category', value: interest }
+                        ]
+                    });
+                }, 2000);
+            }
+        }
+
+        function addMessage(text, sender, options = {}) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+            
+            let messageHTML = `
+                <div class="message-content">${text}</div>
+                <span class="message-time">${time}</span>
+            `;
+
+            // افزودن دکمه‌های تعاملی
+            if (options.buttons && sender === 'ai') {
+                messageHTML += '<div class="message-buttons" style="display: flex; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap;">';
+                options.buttons.forEach(btn => {
+                    messageHTML += `
+                        <button class="message-action-btn" 
+                                onclick="handleMessageAction('${btn.action}', '${btn.value}')"
+                                style="padding: 0.5rem 1rem; background: rgba(0, 212, 255, 0.2); border: 1px solid rgba(0, 212, 255, 0.5); border-radius: 20px; color: #00d4ff; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease;">
+                            ${btn.label}
+                        </button>
+                    `;
+                });
+                messageHTML += '</div>';
+            }
+
+            // افزودن دکمه‌های بازخورد برای پیام‌های AI
+            if (sender === 'ai' && !options.skipFeedback) {
+                messageHTML += `
+                    <div class="message-feedback" style="display: flex; gap: 0.5rem; margin-top: 0.8rem; align-items: center; font-size: 0.85rem; color: #b0b0b0;">
+                        <span>این پاسخ مفید بود؟</span>
+                        <button class="feedback-btn" onclick="provideFeedback('${Date.now()}', true)" 
+                                style="background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: all 0.3s ease;"
+                                title="مفید بود">👍</button>
+                        <button class="feedback-btn" onclick="provideFeedback('${Date.now()}', false)"
+                                style="background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: all 0.3s ease;"
+                                title="مفید نبود">👎</button>
+                    </div>
+                `;
+            }
+            
+            messageDiv.innerHTML = messageHTML;
+            chatMessagesContainer.appendChild(messageDiv);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            
+            const messageData = {
+                id: Date.now().toString(),
+                message: text,
+                sender: sender,
+                timestamp: new Date().toISOString(),
+                context: 'chat',
+                sentiment: userProfile.sentiment
+            };
+            
+            chatMessages.push(messageData);
+        }
+
+        // مدیریت اکشن‌های دکمه‌های پیام
+        window.handleMessageAction = function(action, value) {
+            if (action === 'category') {
+                chatInput.value = `محصولات ${value}`;
+                handleChatSubmit();
+            } else if (action === 'product') {
+                chatInput.value = `اطلاعات ${value}`;
+                handleChatSubmit();
+            } else if (action === 'help') {
+                chatInput.value = value;
+                handleChatSubmit();
+            }
+        };
+
+        // مدیریت بازخورد کاربر
+        window.provideFeedback = function(messageId, isPositive) {
+            const feedbackDiv = event.target.closest('.message-feedback');
+            if (feedbackDiv) {
+                feedbackDiv.innerHTML = `
+                    <span style="color: ${isPositive ? '#00ff88' : '#ff0080'};">
+                        ${isPositive ? '✓ ممنون از بازخوردتون!' : '✗ متأسفیم، سعی می‌کنیم بهتر شویم'}
+                    </span>
+                `;
+                
+                learningData.userFeedback[messageId] = isPositive;
+                
+                if (!isPositive) {
+                    setTimeout(() => {
+                        addMessage('ببخشید که پاسخ مناسبی نبود. 🙏 می‌تونید سوالتون رو دوباره و با جزئیات بیشتر بپرسید؟', 'ai', { skipFeedback: true });
+                    }, 1000);
+                }
+            }
+        };
+
+        async function handleChatSubmit() {
+            const message = chatInput.value.trim();
+            if (!message || isAITyping) return;
+
+            addMessage(message, 'user');
+            chatInput.value = '';
+            chatSend.disabled = true;
+
+            // ذخیره پیام کاربر
+            if (window.dataSdk) {
+                await window.dataSdk.create({
+                    id: Date.now().toString(),
+                    message: message,
+                    sender: 'user',
+                    timestamp: new Date().toISOString(),
+                    context: 'user_message'
+                });
+            }
+
+            // نمایش تایپینگ
+            isAITyping = true;
+            typingIndicator.classList.add('active');
+
+            setTimeout(async () => {
+                typingIndicator.classList.remove('active');
+                const response = generateAIResponse(message);
+                addMessage(response, 'ai');
+                
+                // ذخیره پاسخ AI
+                if (window.dataSdk) {
+                    await window.dataSdk.create({
+                        id: Date.now().toString(),
+                        message: response,
+                        sender: 'ai',
+                        timestamp: new Date().toISOString(),
+                        context: 'ai_response'
+                    });
+                }
+                
+                isAITyping = false;
+                chatSend.disabled = false;
+            }, 1500 + Math.random() * 1000);
+        }
+
+        // تشخیص احساسات کاربر
+        function analyzeSentiment(message) {
+            const positiveWords = ['عالی', 'خوب', 'ممنون', 'دوست دارم', 'خوشحال', 'راضی', 'فوق‌العاده', 'perfect', 'great', 'good', 'thanks', 'happy', 'excellent'];
+            const negativeWords = ['بد', 'ضعیف', 'ناراحت', 'مشکل', 'خراب', 'کند', 'گران', 'bad', 'poor', 'sad', 'problem', 'slow', 'expensive'];
+            const neutralWords = ['چطور', 'کجا', 'چی', 'چه', 'how', 'where', 'what', 'when'];
+
+            const lowerMessage = message.toLowerCase();
+            let sentiment = 'neutral';
+            let score = 0;
+
+            positiveWords.forEach(word => {
+                if (lowerMessage.includes(word)) score += 1;
+            });
+
+            negativeWords.forEach(word => {
+                if (lowerMessage.includes(word)) score -= 1;
+            });
+
+            if (score > 0) sentiment = 'positive';
+            else if (score < 0) sentiment = 'negative';
+            else sentiment = 'neutral';
+
+            userProfile.sentiment = sentiment;
+            return sentiment;
+        }
+
+        // تشخیص زبان پیام
+        function detectLanguage(message) {
+            const persianPattern = /[\u0600-\u06FF]/;
+            const englishPattern = /[a-zA-Z]/;
+
+            if (persianPattern.test(message)) return 'fa';
+            if (englishPattern.test(message)) return 'en';
+            return 'fa';
+        }
+
+        // استخراج کلمات کلیدی و علایق
+        function extractInterests(message) {
+            const interests = ['الکترونیک', 'مد', 'ورزش', 'کتاب', 'زیبایی', 'خانه', 'گوشی', 'لپ‌تاپ', 'کفش', 'لباس'];
+            const lowerMessage = message.toLowerCase();
+
+            interests.forEach(interest => {
+                if (lowerMessage.includes(interest.toLowerCase())) {
+                    if (!userProfile.interests.includes(interest)) {
+                        userProfile.interests.push(interest);
+                    }
+                }
+            });
+        }
+
+        // یادگیری از تعاملات
+        function learnFromInteraction(question, response, wasHelpful = true) {
+            const key = question.toLowerCase().substring(0, 50);
+            
+            if (!learningData.commonQuestions[key]) {
+                learningData.commonQuestions[key] = 1;
+            } else {
+                learningData.commonQuestions[key]++;
+            }
+
+            if (wasHelpful) {
+                learningData.successfulResponses[key] = response;
+            }
+        }
+
+        function generateAIResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            // تحلیل احساسات
+            const sentiment = analyzeSentiment(userMessage);
+            
+            // تشخیص زبان
+            const language = detectLanguage(userMessage);
+            userProfile.preferredLanguage = language;
+            
+            // استخراج علایق
+            extractInterests(userMessage);
+            
+            // ذخیره در context
+            conversationContext.push({
+                message: userMessage,
+                timestamp: Date.now(),
+                sentiment: sentiment
+            });
+            
+            // پاسخ‌های هوشمند و پیشرفته
+            const responses = {
+                'سلام': 'سلام! 👋 خوش اومدید به Shopland. من دستیار هوشمند شما هستم و می‌تونم در انتخاب بهترین محصولات کمکتون کنم. چطور می‌تونم کمکتون کنم؟',
+                'خوبی': 'ممنون! من عالی هستم 😊 آماده‌ام تا بهترین تجربه خرید رو برای شما فراهم کنم. چه محصولی دنبالش می‌گردید؟',
+                'قیمت': 'ما بهترین قیمت‌ها رو در بازار داریم! 💰 با سیستم هوش مصنوعی ما، می‌تونم بهترین پیشنهادات رو بر اساس بودجه شما ارائه بدم. کدوم محصول رو می‌خواید؟',
+                'ارسال': 'ارسال رایگان 🚚 برای سفارش‌های بالای 500 هزار تومان در کمتر از 24 ساعت! همچنین می‌تونید زمان دقیق تحویل رو انتخاب کنید.',
+                'تخفیف': 'الان تخفیف‌های ویژه تا 70 درصد داریم! 🎉 با هوش مصنوعی ما، بهترین تخفیف‌ها رو بر اساس علاقه‌مندی‌های شما پیدا می‌کنم.',
+                'گارانتی': 'تمام محصولات ما دارای گارانتی معتبر و اصالت کالا هستن. ✅ همچنین بیمه محصول هم ارائه می‌دیم.',
+                'پرداخت': 'پرداخت 💳 از طریق تمام کارت‌های بانکی، کیف پول‌های الکترونیکی و حتی پرداخت اقساطی امکان‌پذیره!',
+                'پیگیری': 'برای پیگیری سفارش 📦، کد پیگیری خودتون رو وارد کنید یا از طریق پنل کاربری پیگیری کنید. همچنین اعلان‌های لحظه‌ای دریافت می‌کنید.',
+                'بازگشت': 'امکان بازگشت کالا ↩️ تا 7 روز بدون هیچ شرطی وجود داره. فقط کافیه درخواست بدید و ما محصول رو از درب منزل تحویل می‌گیریم.',
+                'محصول': 'ما بیش از 10000 محصول متنوع در 7 دسته‌بندی داریم! 🛍️ با هوش مصنوعی پیشرفته، می‌تونم بهترین محصول رو بر اساس نیاز شما پیشنهاد بدم. دنبال چی می‌گردید؟',
+                'تماس': 'می‌تونید از طریق شماره 021-12345678 📞، ایمیل support@shopland.com یا همین چت‌باکس با ما در ارتباط باشید. پشتیبانی 24/7 فعاله!',
+                
+                // محصولات الکترونیک
+                'هدفون': 'هدفون بلوتوثی ما با قیمت 2,500,000 تومان و کیفیت استودیویی عالیه! 🎧 نویز کنسلینگ فعال، باتری 30 ساعته و صدای بی‌نظیر داره.',
+                'ساعت': 'ساعت هوشمند ما 3,200,000 تومان با قابلیت ردیابی سلامتی، ضربان قلب، اکسیژن خون و 50+ حالت ورزشی! ⌚',
+                'گوشی': 'گوشی هوشمند ما 15,000,000 تومان با دوربین 108 مگاپیکسل، پردازنده قدرتمند و باتری 5000 میلی‌آمپر! 📱',
+                'لپ تاپ': 'لپ‌تاپ گیمینگ ما 25,000,000 تومان با RTX 4060، پردازنده i7 نسل 13 و صفحه 144Hz! 💻 برای گیمرهای حرفه‌ای!',
+                'دوربین': 'دوربین دیجیتال 4K ما 8,500,000 تومان با سنسور 24 مگاپیکسل و لنز 18-55! 📷 عکاسی حرفه‌ای در دستان شما.',
+                'مانیتور': 'مانیتور گیمینگ 12,000,000 تومان با 144Hz، 1ms و پنل IPS! 🖥️ تجربه بازی بی‌نظیر.',
+                'تبلت': 'تبلت 10 اینچ ما 5,500,000 تومان با صفحه AMOLED و قلم دیجیتال! 📱 مناسب کار و سرگرمی.',
+                
+                // محصولات ورزشی
+                'کفش': 'کفش ورزشی با 30% تخفیف فقط 1,800,000 تومان! 👟 کفی طبی، سبک و راحت برای دویدن و پیاده‌روی.',
+                'تردمیل': 'تردمیل حرفه‌ای 8,500,000 تومان با موتور 2 اسب، سرعت تا 16 کیلومتر و صفحه لمسی! 🏃',
+                'دوچرخه': 'دوچرخه ثابت 5,200,000 تومان با مقاومت مغناطیسی و نمایشگر دیجیتال! 🚴',
+                'دمبل': 'دمبل قابل تنظیم 680,000 تومان از 2 تا 20 کیلو! 🏋️ مناسب تمرینات خانگی.',
+                
+                // محصولات خانگی
+                'قهوه': 'قهوه‌ساز اسپرسو 2,800,000 تومان با فشار 15 بار و شیر فوم! ☕ قهوه حرفه‌ای در خانه.',
+                'مایکروویو': 'مایکروویو 28 لیتر 3,500,000 تومان با گریل و کانوکشن! 📻',
+                'یخچال': 'یخچال مینی 4,200,000 تومان مناسب اتاق، دفتر و خوابگاه! 🧊',
+                'جارو': 'جاروبرقی 2,900,000 تومان با قدرت مکش 2000 وات و فیلتر HEPA! 🧹',
+                
+                // محصولات مد و پوشاک
+                'کوله': 'کوله پشتی 950,000 تومان با طراحی مدرن، ضد آب و جای لپ‌تاپ! 🎒',
+                'عینک': 'عینک آفتابی 650,000 تومان با محافظت UV400 و لنز پلاریزه! 🕶️',
+                'کت': 'کت اسپرت 2,800,000 تومان مناسب تمام فصول با پارچه مرغوب! 🧥',
+                
+                // محصولات کتاب
+                'کتاب': 'ما بیش از 1000 عنوان کتاب داریم! 📚 از رمان و داستان تا کتاب‌های آموزشی و تخصصی. دنبال چه موضوعی می‌گردید؟',
+                'رمان': 'کتاب رمان 250,000 تومان با داستانی جذاب و هیجان‌انگیز! 📖',
+                
+                // محصولات زیبایی
+                'سشوار': 'سشوار یونیزه کننده 1,200,000 تومان با 3 سرعت و محافظت از مو! 💇',
+                'اتو مو': 'اتو مو سرامیکی 980,000 تومان با تنظیم دما و صفحات تیتانیوم! 💆',
+                'ماساژور': 'ماساژور چند حالته 1,500,000 تومان برای رفع خستگی و درد! 💆',
+                
+                // سوالات عمومی
+                'ممنون': 'خواهش می‌کنم! 🙏 خوشحالم که تونستم کمک کنم. اگر سوال دیگه‌ای دارید، در خدمتم.',
+                'خداحافظ': 'خداحافظ! 👋 هر وقت نیاز داشتید، من همیشه اینجام. خرید خوبی داشته باشید!',
+                'عالی': 'خوشحالم که راضی هستید! 😊 می‌تونم محصولات مشابه یا مکمل رو هم بهتون پیشنهاد بدم. چیز دیگه‌ای می‌خواید؟',
+                'کمک': 'البته! من اینجام تا کمکتون کنم. 🤝 می‌تونم در مورد محصولات، قیمت‌ها، ارسال، پرداخت و هر چیز دیگه‌ای راهنماییتون کنم. چه سوالی دارید؟',
+                'خرید': 'برای خرید، محصول مورد نظرتون رو انتخاب کنید و روی دکمه "افزودن" کلیک کنید. 🛒 بعد از اضافه کردن محصولات، روی آیکون سبد خرید کلیک کنید و خرید رو نهایی کنید.',
+                'سبد': 'سبد خرید شما در بالای صفحه نمایش داده میشه. 🛒 می‌تونید محصولات رو اضافه، حذف یا تعداد رو تغییر بدید.',
+                
+                // دسته‌بندی‌ها
+                'الکترونیک': 'ما بیش از 25 محصول الکترونیکی داریم: گوشی، لپ‌تاپ، هدفون، ساعت هوشمند، دوربین، مانیتور، تبلت، اسپیکر و... 📱 کدوم رو می‌خواید؟',
+                'ورزشی': 'محصولات ورزشی ما شامل: تردمیل، دوچرخه ثابت، دمبل، کفش ورزشی، توپ‌های مختلف، کیسه بوکس و... ⚽ برای چه ورزشی می‌خواید؟',
+                'مد': 'در بخش مد و پوشاک: کوله پشتی، عینک آفتابی، کفش، کت، شال، دستکش، کمربند و... 🕶️ دنبال چی می‌گردید؟',
+                'خانه': 'لوازم خانگی: قهوه‌ساز، مایکروویو، یخچال، جاروبرقی، اتو، میکسر، چای‌ساز و... 🍹 برای چه کاری می‌خواید؟',
+                'زیبایی': 'محصولات زیبایی و سلامت: سشوار، اتو مو، ماشین اصلاح، ماساژور، ترازو، فشارسنج و... 💄 چه محصولی می‌خواید؟',
+                
+                // پیشنهادات هوشمند
+                'پیشنهاد': 'بر اساس محصولات پرفروش، پیشنهاد می‌کنم: هدفون بلوتوثی (2.5M)، ساعت هوشمند (3.2M) یا گوشی هوشمند (15M) رو ببینید! 🎯',
+                'محبوب': 'محبوب‌ترین محصولات این هفته: لپ‌تاپ گیمینگ، دوربین 4K، تردمیل و قهوه‌ساز! 🔥',
+                'جدید': 'جدیدترین محصولات: مانیتور گیمینگ، یخچال مینی، کیسه بوکس و آینه آرایشی LED! ✨',
+                
+                // هوش مصنوعی
+                'هوش مصنوعی': 'من یک دستیار هوشمند پیشرفته هستم که با تحلیل رفتار خرید شما، بهترین پیشنهادات رو ارائه می‌دم! 🤖 می‌تونم محصولات رو بر اساس بودجه، نیاز و علاقه شما فیلتر کنم.',
+                'ai': 'سیستم AI ما می‌تونه: 1️⃣ محصولات مشابه پیدا کنه 2️⃣ بهترین قیمت رو پیشنهاد بده 3️⃣ زمان مناسب خرید رو تشخیص بده 4️⃣ تخفیف‌های شخصی‌سازی شده ارائه بده',
+                'هوشمند': 'با هوش مصنوعی Shopland، تجربه خرید شما کاملاً شخصی‌سازی میشه! 🎯 هر چی بیشتر خرید کنید، پیشنهادات دقیق‌تر میشه.'
+            };
+
+            // جستجوی هوشمند در پیام
+            for (const [key, value] of Object.entries(responses)) {
+                if (lowerMessage.includes(key)) {
+                    return value;
+                }
+            }
+
+            // پاسخ‌های بر اساس احساسات
+            let emotionalResponse = '';
+            if (sentiment === 'negative') {
+                const negativeResponses = [
+                    'متوجه نگرانی شما هستم 😔 بذارید کمکتون کنم تا مشکل حل بشه. دقیقاً چه مشکلی دارید؟',
+                    'ببخشید که تجربه خوبی نداشتید 🙏 من اینجام تا کمکتون کنم. چطور می‌تونم این مشکل رو برطرف کنم؟',
+                    'نگران نباشید! 💪 من می‌تونم کمکتون کنم. بگید چه اتفاقی افتاده تا راه‌حل پیدا کنیم.',
+                    'متأسفم که این اتفاق افتاده 😞 بذارید با هم این مشکل رو حل کنیم. جزئیات بیشتری بهم بدید.'
+                ];
+                emotionalResponse = negativeResponses[Math.floor(Math.random() * negativeResponses.length)];
+            } else if (sentiment === 'positive') {
+                const positiveResponses = [
+                    'خوشحالم که راضی هستید! 😊 چطور می‌تونم بیشتر کمکتون کنم؟',
+                    'عالیه! 🎉 خوشحالم که تجربه خوبی دارید. چیز دیگه‌ای می‌خواید؟',
+                    'واقعاً خوشحالم! 🌟 اگر سوال دیگه‌ای دارید، در خدمتم.',
+                    'ممنون از بازخورد مثبتتون! 💖 همیشه در خدمتتون هستیم.'
+                ];
+                emotionalResponse = positiveResponses[Math.floor(Math.random() * positiveResponses.length)];
+            }
+
+            if (emotionalResponse) {
+                learnFromInteraction(userMessage, emotionalResponse, true);
+                return emotionalResponse;
+            }
+
+            // پیشنهادات شخصی‌سازی شده بر اساس علایق
+            if (userProfile.interests.length > 0) {
+                const interest = userProfile.interests[userProfile.interests.length - 1];
+                const personalizedResponses = {
+                    'الکترونیک': 'با توجه به علاقه شما به الکترونیک 📱، پیشنهاد می‌کنم گوشی هوشمند جدید (15M) یا لپ‌تاپ گیمینگ (25M) رو ببینید!',
+                    'مد': 'چون به مد علاقه دارید 👔، کلکسیون جدید کفش‌ها و لباس‌های ما رو حتماً ببینید!',
+                    'ورزش': 'برای علاقه‌مندان به ورزش ⚽، تردمیل و دوچرخه ثابت ما عالی هستن!',
+                    'کتاب': 'عاشق کتاب هستید؟ 📚 کتاب‌های جدید و پرفروش ما رو ببینید!',
+                    'زیبایی': 'محصولات زیبایی و سلامت 💄 ما با کیفیت عالی و قیمت مناسب!',
+                    'خانه': 'لوازم خانگی پیشرفته 🏠 برای زندگی راحت‌تر!'
+                };
+
+                if (personalizedResponses[interest]) {
+                    return personalizedResponses[interest];
+                }
+            }
+
+            // بررسی یادگیری قبلی
+            const learnedKey = lowerMessage.substring(0, 50);
+            if (learningData.successfulResponses[learnedKey]) {
+                return learningData.successfulResponses[learnedKey];
+            }
+
+            // پاسخ‌های پیش‌فرض هوشمند
+            const defaultResponses = [
+                'جالبه! 🤔 بیشتر توضیح بدید تا با هوش مصنوعی پیشرفته‌مون بهترین پیشنهاد رو بهتون بدم.',
+                'متوجه شدم. 👍 می‌تونم محصولات مرتبط رو بهتون نشون بدم. چیز خاصی دنبالش می‌گردید؟',
+                'ممنون از پیامتون! 😊 با تحلیل نیاز شما، می‌تونم بهترین محصولات رو پیشنهاد بدم. بیشتر توضیح بدید.',
+                'این سوال خوبیه! 💡 سیستم هوش مصنوعی ما می‌تونه اطلاعات کاملی بهتون بده. دقیقاً دنبال چی هستید؟',
+                'حتماً! ✨ با هوش مصنوعی پیشرفته، می‌تونم بهترین گزینه‌ها رو بر اساس بودجه و نیازتون پیدا کنم. بودجه‌تون چقدره؟',
+                'می‌تونید سوالتون رو واضح‌تر بپرسید؟ 🙏 هر چی دقیق‌تر بگید، پیشنهادات بهتری می‌تونم بدم.',
+                'من اینجام تا با هوش مصنوعی کمکتون کنم! 🤖 می‌تونم محصولات رو بر اساس قیمت، برند، ویژگی‌ها و نظرات فیلتر کنم. چی می‌خواید؟',
+                'سیستم AI ما داره پیام شما رو تحلیل می‌کنه... 🔍 می‌تونید بیشتر درباره نیازتون بگید تا بهترین پیشنهاد رو بدم؟'
+            ];
+
+            const response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+            learnFromInteraction(userMessage, response, true);
+            return response;
+        }
+
+        chatSend.addEventListener('click', handleChatSubmit);
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isAITyping) {
+                handleChatSubmit();
+            }
+        });
+
+        // پاسخ‌های سریع هوشمند
+        function updateQuickReplies() {
+            const quickRepliesContainer = document.getElementById('quick-replies');
+            
+            // پاسخ‌های سریع بر اساس context و علایق
+            let replies = [
+                { text: '🆕 محصولات جدید', icon: '🆕' },
+                { text: '🎁 تخفیف‌ها', icon: '🎁' },
+                { text: '📦 پیگیری سفارش', icon: '📦' },
+                { text: '⚙️ تنظیمات', icon: '⚙️', action: 'settings' }
+            ];
+
+            // اضافه کردن پاسخ‌های شخصی‌سازی شده
+            if (userProfile.interests.length > 0) {
+                const interest = userProfile.interests[userProfile.interests.length - 1];
+                replies.unshift({ text: `${interest} جدید`, icon: '🔥' });
+            }
+
+            // محدود کردن به 5 پاسخ سریع
+            replies = replies.slice(0, 5);
+
+            quickRepliesContainer.innerHTML = replies.map(reply => 
+                `<button class="quick-reply" data-action="${reply.action || 'message'}">${reply.text}</button>`
+            ).join('');
+
+            // اضافه کردن event listener
+            document.querySelectorAll('.quick-reply').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const action = btn.dataset.action;
+                    if (action === 'settings') {
+                        showChatSettings();
+                    } else {
+                        chatInput.value = btn.textContent;
+                        handleChatSubmit();
+                    }
+                });
+            });
+        }
+
+        // به‌روزرسانی پاسخ‌های سریع در ابتدا
+        updateQuickReplies();
+
+        // Data SDK
+        const dataHandler = {
+            onDataChanged(data) {
+                // داده‌های چت ذخیره شده
+                console.log('Chat data updated:', data.length, 'messages');
+            }
+        };
+
+        async function initDataSDK() {
+            if (window.dataSdk) {
+                const result = await window.dataSdk.init(dataHandler);
+                if (!result.isOk) {
+                    console.error('Failed to initialize Data SDK');
+                }
+            }
+        }
+
+        // Element SDK
+        async function onConfigChange(config) {
+            const siteTitle = config.site_title || defaultConfig.site_title;
+            const heroTitle = config.hero_title || defaultConfig.hero_title;
+            const heroSubtitle = config.hero_subtitle || defaultConfig.hero_subtitle;
+            const ctaText = config.cta_text || defaultConfig.cta_text;
+            const productsTitle = config.products_title || defaultConfig.products_title;
+            const aiName = config.ai_name || defaultConfig.ai_name;
+            const footerText = config.footer_text || defaultConfig.footer_text;
+
+            document.getElementById('site-title').textContent = siteTitle;
+            document.getElementById('hero-title').textContent = heroTitle;
+            document.getElementById('hero-subtitle').textContent = heroSubtitle;
+            document.getElementById('cta-button').textContent = ctaText;
+            document.getElementById('products-title').textContent = productsTitle;
+            document.getElementById('ai-name').textContent = aiName;
+            document.getElementById('footer-text').textContent = footerText;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ['site_title', config.site_title || defaultConfig.site_title],
+                ['hero_title', config.hero_title || defaultConfig.hero_title],
+                ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+                ['cta_text', config.cta_text || defaultConfig.cta_text],
+                ['products_title', config.products_title || defaultConfig.products_title],
+                ['ai_welcome', config.ai_welcome || defaultConfig.ai_welcome],
+                ['ai_name', config.ai_name || defaultConfig.ai_name],
+                ['footer_text', config.footer_text || defaultConfig.footer_text]
+            ]);
+        }
+
+        // اسکرول نرم
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // فرم خبرنامه
+        document.querySelector('.newsletter-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = e.target.querySelector('.newsletter-input').value;
+            if (email) {
+                showNotification('ایمیل شما با موفقیت ثبت شد!');
+                e.target.reset();
+            }
+        });
+
+        // فرم تماس با ما
+        document.getElementById('contact-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+
+            if (name && email && subject && message) {
+                const submitBtn = e.target.querySelector('.form-submit');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'در حال ارسال...';
+
+                // ذخیره پیام در Data SDK
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create({
+                        id: Date.now().toString(),
+                        message: `نام: ${name}, ایمیل: ${email}, موضوع: ${subject}, پیام: ${message}`,
+                        sender: 'contact_form',
+                        timestamp: new Date().toISOString(),
+                        context: 'contact_submission'
+                    });
+
+                    if (result.isOk) {
+                        showNotification('پیام شما با موفقیت ارسال شد!');
+                        e.target.reset();
+                    } else {
+                        showNotification('خطا در ارسال پیام. لطفاً دوباره تلاش کنید.');
+                    }
+                } else {
+                    showNotification('پیام شما با موفقیت ارسال شد!');
+                    e.target.reset();
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'ارسال پیام';
+            }
+        });
+
+        // دکمه‌های دسته‌بندی
+        function goToCategory(category) {
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                const filterBtn = document.querySelector(`.filter-btn[data-filter="${category}"]`);
+                if (filterBtn) {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    filterBtn.classList.add('active');
+                    renderProducts(category, 1);
+                }
+            }, 500);
+        }
+
+        // دکمه‌های بلاگ
+        document.querySelectorAll('.blog-read-more').forEach(btn => {
+            btn.addEventListener('click', () => {
+                showNotification('این مقاله به زودی منتشر می‌شود!');
+            });
+        });
+
+        // مقداردهی اولیه
+        window.addEventListener('load', () => {
+            const loading = document.getElementById('loading');
+            loading.classList.add('active');
+            
+            setTimeout(() => {
+                loading.classList.remove('active');
+            }, 1000);
+
+            createParticles();
+            renderProducts();
+            initDataSDK();
+
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange,
+                    mapToCapabilities,
+                    mapToEditPanelValues
+                });
+            }
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99d69485a5812d63',t:'MTc2Mjk1NjI4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
